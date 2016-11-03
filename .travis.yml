@@ -1,0 +1,10 @@
+language: go
+
+go:
+  - 1.7.3
+  - master
+
+sudo: false
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
