@@ -12,6 +12,6 @@ func TestDownloadPlayer(t *testing.T) {
 	playerPath := path.Join(dir, "myplayer.swf")
 	err := DownloadPlayer(playerPath)
 	if err != nil {
-		t.Error("Failed to download player.swf: ", err)
+		t.Errorf("Failed to download player.swf: %s", err)
 	}
 }

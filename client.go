@@ -1,12 +1,15 @@
 package radiko
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 const (
-	defaultEndpoint = "https://radiko.jp"
+	defaultHTTPTimeout = 90 * time.Second
+	defaultEndpoint    = "https://radiko.jp"
 	// envEndpoint is the environment variable that overrrides the defaultEndpoint.
 	envEndpoint = "RADIKO_ENDPOINT"
 
@@ -29,10 +32,33 @@ const (
 	radikoDevice     = "pc"
 )
 
+var (
+	httpClient = &http.Client{Timeout: defaultHTTPTimeout}
+)
+
 // Client represents a single connection to radiko API endpoint.
 type Client struct {
 	URL *url.URL
 
 	HTTPClient *http.Client
 	HTTPHeader http.Header
+}
+
+// New returns new Client struct.
+func New() (*Client, error) {
+	parsedURL, err := url.Parse(defaultEndpoint)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to parse url: %s", err)
+	}
+
+	return &Client{
+		URL:        parsedURL,
+		HTTPClient: httpClient,
+		HTTPHeader: make(http.Header),
+	}, nil
+}
+
+// SetHTTPClient overrides the default HTTP client.
+func SetHTTPClient(client *http.Client) {
+	httpClient = client
 }
