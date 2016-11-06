@@ -1,9 +1,11 @@
 package radiko
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
+	"path"
 	"time"
 )
 
@@ -41,7 +43,6 @@ type Client struct {
 	URL *url.URL
 
 	HTTPClient *http.Client
-	HTTPHeader http.Header
 }
 
 // New returns new Client struct.
@@ -51,14 +52,53 @@ func New() (*Client, error) {
 		return nil, fmt.Errorf("Failed to parse url: %s", err)
 	}
 
+	if httpClient == nil {
+		return nil, errors.New("HTTP Client is nil.")
+	}
+
 	return &Client{
 		URL:        parsedURL,
 		HTTPClient: httpClient,
-		HTTPHeader: make(http.Header),
 	}, nil
+}
+
+func (c *Client) newRequest(verb, apiEndpoint string, params *Params) (*http.Request, error) {
+	u := *c.URL
+	u.Path = path.Join(c.URL.Path, apiEndpoint)
+
+	// Add query parameters
+	urlQuery := u.Query()
+	for k, v := range params.query {
+		urlQuery.Set(k, v)
+	}
+	u.RawQuery = urlQuery.Encode()
+
+	req, err := http.NewRequest(verb, u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	// Add request headers
+	for k, v := range params.header {
+		req.Header.Set(k, v)
+	}
+
+	return req, nil
+}
+
+// Params is the list of options to pass to the request.
+type Params struct {
+	// query is a map of key-value pairs that will be added to the Request.
+	query map[string]string
+	// header is a map of key-value pairs that will be added to the Request.
+	header map[string]string
 }
 
 // SetHTTPClient overrides the default HTTP client.
 func SetHTTPClient(client *http.Client) {
 	httpClient = client
+}
+
+func apiPath(apiVersion, pathStr string) string {
+	return path.Join(apiVersion, "api", pathStr)
 }
