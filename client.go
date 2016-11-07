@@ -24,9 +24,10 @@ const (
 	radikoUserHeader       = "X-Radiko-User"
 	radikoDeviceHeader     = "X-Radiko-Device"
 
-	radikoAuthTokenHeader = "X-Radiko-AuthToken"
-	radikoKeyLentghHeader = "X-Radiko-KeyLength"
-	radikoKeyOffsetHeader = "X-Radiko-KeyOffset"
+	radikoAuthTokenHeader  = "X-Radiko-AuthToken"
+	radikoKeyLentghHeader  = "X-Radiko-KeyLength"
+	radikoKeyOffsetHeader  = "X-Radiko-KeyOffset"
+	radikoPartialKeyHeader = "X-Radiko-Partialkey"
 
 	radikoApp        = "pc_ts"
 	radikoAppVersion = "4.0.0"
@@ -40,6 +41,7 @@ var (
 
 // Client represents a single connection to radiko API endpoint.
 type Client struct {
+	// TODO: 再設計
 	URL *url.URL
 
 	HTTPClient *http.Client
@@ -53,7 +55,7 @@ func New() (*Client, error) {
 	}
 
 	if httpClient == nil {
-		return nil, errors.New("HTTP Client is nil.")
+		return nil, errors.New("HTTP Client is nil")
 	}
 
 	return &Client{
@@ -63,6 +65,7 @@ func New() (*Client, error) {
 }
 
 func (c *Client) newRequest(verb, apiEndpoint string, params *Params) (*http.Request, error) {
+	// TODO: 再設計
 	u := *c.URL
 	u.Path = path.Join(c.URL.Path, apiEndpoint)
 

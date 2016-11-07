@@ -20,3 +20,21 @@ func TestAuth1Fms(t *testing.T) {
 		t.Errorf("AuthToken: %s, Length: %d, Offset: %d", authToken, length, offset)
 	}
 }
+
+func TestAuth2Fms(t *testing.T) {
+	client, err := New()
+	if err != nil {
+		t.Fatalf("Failed to construct client: %s", err)
+	}
+
+	/* TODO: Implement mock server
+	ctx := context.Background()
+	res, err := client.Auth2Fms(ctx)
+	if err != nil {
+		t.Errorf("Error: %s", err)
+	}
+	if len(s) == 0 {
+		t.Error("Empty results")
+	}
+	*/
+}
