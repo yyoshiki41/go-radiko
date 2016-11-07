@@ -26,6 +26,7 @@ func TestAuth2Fms(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
+	_ = client
 
 	/* TODO: Implement mock server
 	ctx := context.Background()

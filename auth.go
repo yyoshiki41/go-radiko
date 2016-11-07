@@ -13,6 +13,7 @@ func (c *Client) Auth1Fms(ctx context.Context) (string, int64, int64, error) {
 
 	req, err := c.newRequest("POST", apiEndpoint, &Params{
 		header: map[string]string{
+			// TODO: Set default HTTP Header ?
 			// For backwards compatibility with HTTP/1.0
 			// https://tools.ietf.org/html/rfc7234#page-29
 			"pragma":               "no-cache",
