@@ -1,7 +1,6 @@
 package radiko
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 
@@ -13,11 +12,13 @@ func TestAreaID(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to get area id: %s", err)
 	}
-	fmt.Println(areaID)
+	if !(strings.HasPrefix(areaID, "JP") || areaID == "OUT") {
+		t.Errorf("Invalid area id.\nAreaID: %s", areaID)
+	}
 }
 
 func TestProcessSpanNode(t *testing.T) {
-	expectedAreaID := "JP13"
+	const expectedAreaID = "JP13"
 	s := `document.write('<span class="` + expectedAreaID + `">TOKYO JAPAN</span>');`
 
 	doc, err := html.Parse(strings.NewReader(s))
@@ -27,7 +28,7 @@ func TestProcessSpanNode(t *testing.T) {
 
 	areaID := processSpanNode(doc)
 	if areaID != expectedAreaID {
-		t.Errorf("Failed to process span node.\nAreaID: %s",
-			areaID)
+		t.Errorf(
+			"Failed to process span node.\nAreaID: %s", areaID)
 	}
 }
