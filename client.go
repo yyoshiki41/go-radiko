@@ -55,7 +55,7 @@ func New() (*Client, error) {
 	}
 
 	if httpClient == nil {
-		return nil, errors.New("HTTP Client is nil")
+		return nil, errors.New("A HTTP client is nil.")
 	}
 
 	return &Client{
