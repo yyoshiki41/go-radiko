@@ -8,6 +8,8 @@ sudo: false
 
 script:
   - go test -race -coverprofile=coverage.txt -covermode=atomic
+  - go test -v -run TestAreaID
+  - curl "http://radiko.jp/area"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
