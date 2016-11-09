@@ -16,23 +16,23 @@ func TestGetNowPrograms(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error: %s", err)
 	}
-	if programs != nil {
+	if programs == nil {
 		t.Errorf("Programs is nil.")
 	}
 }
 
-func TestGetStationMaps(t *testing.T) {
+func TestGetStationList(t *testing.T) {
 	client, err := New()
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
 
 	ctx := context.Background()
-	m, err := client.GetStationMaps(ctx, areaIDTokyo)
+	s, err := client.GetStationList(ctx, areaIDTokyo)
 	if err != nil {
 		t.Errorf("Error: %s", err)
 	}
-	if len(m) == 0 {
-		t.Errorf("Program map is empty.")
+	if s == nil {
+		t.Error("Stations is empty.")
 	}
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type Programs struct {
-	Stations Stations `xml:"stations"`
+	Stations *Stations `xml:"stations"`
 }
 
 type Stations struct {
@@ -32,9 +32,13 @@ type Progs struct {
 type Prog struct {
 	Ft       string `xml:"ft,attr"`
 	To       string `xml:"to,attr"`
+	Ftl      string `xml:"ftl,attr"`
+	Tol      string `xml:"tol,attr"`
+	Dur      string `xml:"dur,attr"`
 	Title    string `xml:"title"`
 	SubTitle string `xml:"sub_title"`
 	Desc     string `xml:"desc"`
+	Pfm      string `xml:"pfm"`
 	Info     string `xml:"info"`
 	URL      string `xml:"url"`
 }
@@ -67,18 +71,13 @@ func (c *Client) GetNowPrograms(ctx context.Context, areaID string) (*Programs, 
 	return &programs, err
 }
 
-// GetStationMaps returns available station's map.
+// GetStationList returns a slice of available Station.
 // This API wraps GetNowPrograms.
-func (c *Client) GetStationMaps(ctx context.Context, areaID string) (map[string]string, error) {
-	m := make(map[string]string)
-
+func (c *Client) GetStationList(ctx context.Context, areaID string) ([]Station, error) {
 	programs, err := c.GetNowPrograms(ctx, areaID)
-	if err != nil {
-		return m, err
+	if err != nil || programs.Stations == nil {
+		return nil, err
 	}
 
-	for _, s := range programs.Stations.Stations {
-		m[s.ID] = s.Name
-	}
-	return m, err
+	return programs.Stations.Stations, err
 }

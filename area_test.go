@@ -18,8 +18,8 @@ func TestAreaID(t *testing.T) {
 }
 
 func TestProcessSpanNode(t *testing.T) {
-	const expectedAreaID = "JP13"
-	s := `document.write('<span class="` + expectedAreaID + `">TOKYO JAPAN</span>');`
+	const expected = "JP13"
+	s := `document.write('<span class="` + expected + `">TOKYO JAPAN</span>');`
 
 	doc, err := html.Parse(strings.NewReader(s))
 	if err != nil {
@@ -27,7 +27,7 @@ func TestProcessSpanNode(t *testing.T) {
 	}
 
 	areaID := processSpanNode(doc)
-	if areaID != expectedAreaID {
+	if areaID != expected {
 		t.Errorf(
 			"Failed to process span node.\nAreaID: %s", areaID)
 	}

@@ -13,15 +13,26 @@ func TestNew(t *testing.T) {
 	}
 }
 
+func TestEmptyHTTPClient(t *testing.T) {
+	var c *http.Client
+	SetHTTPClient(c)
+
+	client, err := New()
+	if err == nil {
+		t.Errorf(
+			"Should detect HTTPClient is nil.\nclient: %v", client)
+	}
+}
+
 func TestSetHTTPClient(t *testing.T) {
-	const timeout = 1 * time.Second
-	SetHTTPClient(&http.Client{Timeout: timeout})
+	const expected = 1 * time.Second
+	SetHTTPClient(&http.Client{Timeout: expected})
 
 	client, err := New()
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)
 	}
-	if client.HTTPClient.Timeout != timeout {
-		t.Errorf("Failed to set http client: %s", err)
+	if client.HTTPClient.Timeout != expected {
+		t.Errorf("expected %d, but %d", expected, client.HTTPClient.Timeout)
 	}
 }
