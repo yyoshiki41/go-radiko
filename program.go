@@ -48,8 +48,8 @@ type Prog struct {
 	URL      string `xml:"url"`
 }
 
-// GetStations returns program's meta-info.
-func (c *Client) GetStations(ctx context.Context, areaID string, date time.Time) (*Stations, error) {
+// GetStationsByAreaID returns program's meta-info.
+func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date time.Time) (*Stations, error) {
 	apiEndpoint := path.Join(apiV3,
 		"program/date", internal.Date(date),
 		fmt.Sprintf("%s.xml", areaID))
@@ -78,8 +78,19 @@ func (c *Client) GetStations(ctx context.Context, areaID string, date time.Time)
 	return entity.stations(), err
 }
 
-// GetNowPrograms returns program's meta-info which are currently on the air.
-func (c *Client) GetNowPrograms(ctx context.Context, areaID string) (*Stations, error) {
+// GetStations returns program's meta-info in the current location.
+// This API wrapes GetStationsByAreaID.
+func (c *Client) GetStations(ctx context.Context, date time.Time) (*Stations, error) {
+	areaID, err := AreaID()
+	if err != nil {
+		return nil, err
+	}
+
+	return c.GetStationsByAreaID(ctx, areaID, date)
+}
+
+// GetNowProgramsByAreaID returns program's meta-info which are currently on the air.
+func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (*Stations, error) {
 	apiEndpoint := apiPath(apiV2, "program/now")
 
 	req, err := c.newRequest("GET", apiEndpoint, &Params{
@@ -109,6 +120,17 @@ func (c *Client) GetNowPrograms(ctx context.Context, areaID string) (*Stations, 
 	}
 
 	return entity.stations(), err
+}
+
+// GetNowPrograms returns program's meta-info in the current location.
+// This API wrapes GetNowProgramsByAreaID.
+func (c *Client) GetNowPrograms(ctx context.Context) (*Stations, error) {
+	areaID, err := AreaID()
+	if err != nil {
+		return nil, err
+	}
+
+	return c.GetNowProgramsByAreaID(ctx, areaID)
 }
 
 // stationsEntity includes a response struct for client's users.
