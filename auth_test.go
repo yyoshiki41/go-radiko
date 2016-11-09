@@ -22,6 +22,10 @@ func TestAuth1Fms(t *testing.T) {
 }
 
 func TestAuth2Fms(t *testing.T) {
+	if isOutsideJP() {
+		t.Skip("Skipping test in limited mode.")
+	}
+
 	client, err := New()
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
@@ -30,11 +34,11 @@ func TestAuth2Fms(t *testing.T) {
 
 	/* TODO: Implement mock server
 	ctx := context.Background()
-	res, err := client.Auth2Fms(ctx)
+	res, err := client.Auth2Fms(ctx, authToken, partialKey)
 	if err != nil {
 		t.Errorf("Error: %s", err)
 	}
-	if len(s) == 0 {
+	if len(res) == 0 {
 		t.Error("Empty results")
 	}
 	*/

@@ -6,6 +6,10 @@ import (
 )
 
 func TestGetNowPrograms(t *testing.T) {
+	if isOutsideJP() {
+		t.Skip("Skipping test in limited mode.")
+	}
+
 	client, err := New()
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
@@ -22,6 +26,10 @@ func TestGetNowPrograms(t *testing.T) {
 }
 
 func TestGetStationList(t *testing.T) {
+	if isOutsideJP() {
+		t.Skip("Skipping test in limited mode.")
+	}
+
 	client, err := New()
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
