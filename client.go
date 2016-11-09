@@ -10,8 +10,9 @@ import (
 )
 
 const (
-	defaultHTTPTimeout = 90 * time.Second
+	defaultHTTPTimeout = 120 * time.Second
 	defaultEndpoint    = "https://radiko.jp"
+	// TODO: need?
 	// envEndpoint is the environment variable that overrrides the defaultEndpoint.
 	envEndpoint = "RADIKO_ENDPOINT"
 

@@ -3,32 +3,34 @@ package radiko
 import (
 	"context"
 	"encoding/xml"
+	"fmt"
 	"io/ioutil"
+	"path"
 )
 
-type Programs struct {
-	Stations *Stations `xml:"stations"`
-}
+// Stations is a slice of Station.
+type Stations []Station
 
-type Stations struct {
-	Stations []Station `xml:"station"`
-}
-
+// Station is a struct.
 type Station struct {
-	ID   string `xml:"id,attr"`
-	Name string `xml:"name"`
-	Scd  Scd    `xml:"scd"`
+	ID    string `xml:"id,attr"`
+	Name  string `xml:"name"`
+	Scd   Scd    `xml:"scd,omitempty"`
+	Progs Progs  `xml:"progs,omitempty"`
 }
 
+// Scd is a struct.
 type Scd struct {
 	Progs Progs `xml:"progs"`
 }
 
+// Progs is a slice of Prog.
 type Progs struct {
 	Date  string `xml:"date"`
 	Progs []Prog `xml:"prog"`
 }
 
+// Prog is a struct.
 type Prog struct {
 	Ft       string `xml:"ft,attr"`
 	To       string `xml:"to,attr"`
@@ -43,8 +45,38 @@ type Prog struct {
 	URL      string `xml:"url"`
 }
 
+// GetStations returns program's meta-info.
+func (c *Client) GetStations(ctx context.Context, areaID, date string) (*Stations, error) {
+	apiEndpoint := path.Join(apiV3,
+		"program/date", date,
+		fmt.Sprintf("%s.xml", areaID))
+
+	req, err := c.newRequest("GET", apiEndpoint, &Params{})
+	if err != nil {
+		return nil, err
+	}
+
+	req = req.WithContext(ctx)
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var entity stationsEntity
+	if err = xml.Unmarshal(b, &entity); err != nil {
+		return nil, err
+	}
+	return entity.stations(), err
+}
+
 // GetNowPrograms returns program's meta-info which are currently on the air.
-func (c *Client) GetNowPrograms(ctx context.Context, areaID string) (*Programs, error) {
+func (c *Client) GetNowPrograms(ctx context.Context, areaID string) (*Stations, error) {
 	apiEndpoint := apiPath(apiV2, "program/now")
 
 	req, err := c.newRequest("GET", apiEndpoint, &Params{
@@ -58,26 +90,34 @@ func (c *Client) GetNowPrograms(ctx context.Context, areaID string) (*Programs, 
 
 	req = req.WithContext(ctx)
 	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
 	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	var programs Programs
-	if err = xml.Unmarshal(b, &programs); err != nil {
+
+	var entity stationsEntity
+	if err = xml.Unmarshal(b, &entity); err != nil {
 		return nil, err
 	}
-	return &programs, err
+
+	return entity.stations(), err
 }
 
-// GetStationList returns a slice of available Station.
-// This API wraps GetNowPrograms.
-func (c *Client) GetStationList(ctx context.Context, areaID string) ([]Station, error) {
-	programs, err := c.GetNowPrograms(ctx, areaID)
-	if err != nil || programs.Stations == nil {
-		return nil, err
-	}
+// stationsEntity includes a response struct for client's users.
+type stationsEntity struct {
+	XMLName     xml.Name `xml:"radiko"`
+	XMLStations struct {
+		XMLName  xml.Name  `xml:"stations"`
+		Stations *Stations `xml:"station"`
+	} `xml:"stations"`
+}
 
-	return programs.Stations.Stations, err
+// stations return Stations which is a response struct for client's users.
+func (e *stationsEntity) stations() *Stations {
+	return e.XMLStations.Stations
 }
