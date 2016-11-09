@@ -3,6 +3,7 @@ package radiko
 import (
 	"context"
 	"testing"
+	"time"
 )
 
 func TestGetStations(t *testing.T) {
@@ -16,7 +17,7 @@ func TestGetStations(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	stations, err := client.GetStations(ctx, areaIDTokyo, "20161109")
+	stations, err := client.GetStations(ctx, areaIDTokyo, time.Now())
 	if err != nil {
 		t.Error(err)
 	}

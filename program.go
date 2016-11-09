@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path"
+	"time"
+
+	"github.com/yyoshiki41/go-radiko/internal"
 )
 
 // Stations is a slice of Station.
@@ -46,9 +49,9 @@ type Prog struct {
 }
 
 // GetStations returns program's meta-info.
-func (c *Client) GetStations(ctx context.Context, areaID, date string) (*Stations, error) {
+func (c *Client) GetStations(ctx context.Context, areaID string, date time.Time) (*Stations, error) {
 	apiEndpoint := path.Join(apiV3,
-		"program/date", date,
+		"program/date", internal.Date(date),
 		fmt.Sprintf("%s.xml", areaID))
 
 	req, err := c.newRequest("GET", apiEndpoint, &Params{})
@@ -117,7 +120,7 @@ type stationsEntity struct {
 	} `xml:"stations"`
 }
 
-// stations return Stations which is a response struct for client's users.
+// stations returns Stations which is a response struct for client's users.
 func (e *stationsEntity) stations() *Stations {
 	return e.XMLStations.Stations
 }
