@@ -24,3 +24,19 @@ func TestDatetime(t *testing.T) {
 		t.Errorf("datetime: %s", s)
 	}
 }
+
+func TestProgramsDate(t *testing.T) {
+	y, m, d := time.Now().Date()
+
+	date := time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
+	pDate := ProgramsDate(date)
+	if expected := Date(date); expected != pDate {
+		t.Errorf("expected %s, but %s", expected, pDate)
+	}
+
+	date = date.Add(16 * time.Hour)
+	pDate = ProgramsDate(date)
+	if expected := Date(date.Add(-24 * time.Hour)); expected != pDate {
+		t.Errorf("expected %s, but %s", expected, pDate)
+	}
+}
