@@ -3,6 +3,7 @@ package radiko
 import (
 	"context"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"path"
@@ -49,9 +50,9 @@ type Prog struct {
 }
 
 // GetStationsByAreaID returns program's meta-info.
-func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date time.Time) (*Stations, error) {
+func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date time.Time) (Stations, error) {
 	apiEndpoint := path.Join(apiV3,
-		"program/date", internal.Date(date),
+		"program/date", internal.ProgramsDate(date),
 		fmt.Sprintf("%s.xml", areaID))
 
 	req, err := c.newRequest("GET", apiEndpoint, &Params{})
@@ -80,7 +81,7 @@ func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date ti
 
 // GetStations returns program's meta-info in the current location.
 // This API wrapes GetStationsByAreaID.
-func (c *Client) GetStations(ctx context.Context, date time.Time) (*Stations, error) {
+func (c *Client) GetStations(ctx context.Context, date time.Time) (Stations, error) {
 	areaID, err := AreaID()
 	if err != nil {
 		return nil, err
@@ -90,7 +91,7 @@ func (c *Client) GetStations(ctx context.Context, date time.Time) (*Stations, er
 }
 
 // GetNowProgramsByAreaID returns program's meta-info which are currently on the air.
-func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (*Stations, error) {
+func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (Stations, error) {
 	apiEndpoint := apiPath(apiV2, "program/now")
 
 	req, err := c.newRequest("GET", apiEndpoint, &Params{
@@ -124,7 +125,7 @@ func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (*St
 
 // GetNowPrograms returns program's meta-info in the current location.
 // This API wrapes GetNowProgramsByAreaID.
-func (c *Client) GetNowPrograms(ctx context.Context) (*Stations, error) {
+func (c *Client) GetNowPrograms(ctx context.Context) (Stations, error) {
 	areaID, err := AreaID()
 	if err != nil {
 		return nil, err
@@ -133,16 +134,42 @@ func (c *Client) GetNowPrograms(ctx context.Context) (*Stations, error) {
 	return c.GetNowProgramsByAreaID(ctx, areaID)
 }
 
+// GetProgramByStartTime returns a specified program.
+// This API wrapes GetStations.
+func (c *Client) GetProgramByStartTime(ctx context.Context, stationID string, start time.Time) (*Prog, error) {
+	stations, err := c.GetStations(ctx, start)
+	if err != nil {
+		return nil, err
+	}
+
+	ft := internal.Datetime(start)
+	var prog *Prog
+	for _, s := range stations {
+		if s.ID == stationID {
+			for _, p := range s.Progs.Progs {
+				if p.Ft == ft {
+					prog = &p
+					break
+				}
+			}
+		}
+	}
+	if prog == nil {
+		return nil, errors.New("Can not find a program.")
+	}
+	return prog, nil
+}
+
 // stationsEntity includes a response struct for client's users.
 type stationsEntity struct {
 	XMLName     xml.Name `xml:"radiko"`
 	XMLStations struct {
-		XMLName  xml.Name  `xml:"stations"`
-		Stations *Stations `xml:"station"`
+		XMLName  xml.Name `xml:"stations"`
+		Stations Stations `xml:"station"`
 	} `xml:"stations"`
 }
 
 // stations returns Stations which is a response struct for client's users.
-func (e *stationsEntity) stations() *Stations {
+func (e *stationsEntity) stations() Stations {
 	return e.XMLStations.Stations
 }

@@ -37,3 +37,14 @@ func Datetime(t time.Time) string {
 	localTime := t.In(location)
 	return localTime.Format(datetimeLayout)
 }
+
+// ProgramsDate returns a textual representation of the time value
+// formatted in dateLayout.
+func ProgramsDate(t time.Time) string {
+	localTime := t.In(location)
+	h := localTime.Hour()
+	if h >= 0 && h <= 4 {
+		localTime = localTime.Add(-24 * time.Hour)
+	}
+	return localTime.Format(dateLayout)
+}
