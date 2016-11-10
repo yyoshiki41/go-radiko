@@ -20,3 +20,20 @@ func GetURIFromM3U8(input io.Reader) (string, error) {
 	}
 	return p.Variants[0].URI, nil
 }
+
+// GetChunklistFromM3U8 returns a slice of uri string.
+func GetChunklistFromM3U8(input io.Reader) ([]string, error) {
+	playlist, listType, err := m3u8.DecodeFrom(input, true)
+	if err != nil || listType != m3u8.MEDIA {
+		return nil, err
+	}
+	p := playlist.(*m3u8.MediaPlaylist)
+
+	var chunklist []string
+	for _, v := range p.Segments {
+		if v != nil {
+			chunklist = append(chunklist, v.URI)
+		}
+	}
+	return chunklist, nil
+}
