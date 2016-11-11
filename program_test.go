@@ -13,7 +13,7 @@ func TestGetStationsByAreaID(t *testing.T) {
 		t.Skip("Skipping test in limited mode.")
 	}
 
-	client, err := New()
+	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
@@ -33,7 +33,7 @@ func TestGetStations(t *testing.T) {
 		t.Skip("Skipping test in limited mode.")
 	}
 
-	client, err := New()
+	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
@@ -53,7 +53,7 @@ func TestGetNowProgramsByAreaID(t *testing.T) {
 		t.Skip("Skipping test in limited mode.")
 	}
 
-	client, err := New()
+	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
@@ -73,7 +73,7 @@ func TestGetNowPrograms(t *testing.T) {
 		t.Skip("Skipping test in limited mode.")
 	}
 
-	client, err := New()
+	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
@@ -93,7 +93,7 @@ func TestGetProgramByStartTime(t *testing.T) {
 		t.Skip("Skipping test in limited mode.")
 	}
 
-	client, err := New()
+	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}

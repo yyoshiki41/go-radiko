@@ -8,7 +8,7 @@ import (
 )
 
 // TimeshiftPlaylistM3U8 returns uri.
-func (c *Client) TimeshiftPlaylistM3U8(ctx context.Context, authToken, stationID string, start time.Time) (string, error) {
+func (c *Client) TimeshiftPlaylistM3U8(ctx context.Context, stationID string, start time.Time) (string, error) {
 	prog, err := c.GetProgramByStartTime(ctx, stationID, start)
 	if err != nil {
 		return "", err
@@ -22,12 +22,9 @@ func (c *Client) TimeshiftPlaylistM3U8(ctx context.Context, authToken, stationID
 			"to":         prog.To,
 			"l":          "15", // must?
 		},
-		header: map[string]string{
-			radikoAuthTokenHeader: authToken,
-		},
 	})
 
-	resp, err := c.do(req)
+	resp, err := c.CallWithAuthTokenHeader(req)
 	if err != nil {
 		return "", err
 	}

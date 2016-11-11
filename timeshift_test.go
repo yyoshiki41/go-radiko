@@ -7,7 +7,7 @@ func TestTimeshiftPlaylistM3U8(t *testing.T) {
 		t.Skip("Skipping test in limited mode.")
 	}
 
-	client, err := New()
+	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}

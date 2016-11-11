@@ -2,10 +2,40 @@ package radiko
 
 import (
 	"context"
+	"encoding/base64"
 	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
 )
+
+// AuthorizeToken returns an enables auth_token and error,
+// and sets auth_token in Client.
+// Is is a alias function which wrapes Auth1Fms and Auth2Fms.
+func (c *Client) AuthorizeToken(ctx context.Context, pngFilePath string) (string, error) {
+	authToken, length, offset, err := c.Auth1Fms(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	f, err := os.Open(pngFilePath)
+	if err != nil {
+		return "", err
+	}
+
+	b := make([]byte, length)
+	if _, err = f.ReadAt(b, offset); err != nil {
+		return "", err
+	}
+	partialKey := base64.StdEncoding.EncodeToString(b)
+
+	if _, err := c.Auth2Fms(ctx, authToken, partialKey); err != nil {
+		return "", err
+	}
+
+	c.setAuthTokenHeader(authToken)
+	return authToken, nil
+}
 
 // Auth1Fms returns authToken, keyLength, keyOffset and error.
 func (c *Client) Auth1Fms(ctx context.Context) (string, int64, int64, error) {
@@ -23,7 +53,7 @@ func (c *Client) Auth1Fms(ctx context.Context) (string, int64, int64, error) {
 		return "", 0, 0, err
 	}
 
-	resp, err := c.do(req)
+	resp, err := c.Call(req)
 	defer resp.Body.Close()
 
 	authToken := resp.Header.Get(radikoAuthTokenHeader)
@@ -60,7 +90,7 @@ func (c *Client) Auth2Fms(ctx context.Context, authToken, partialKey string) ([]
 		return nil, err
 	}
 
-	resp, err := c.do(req)
+	resp, err := c.Call(req)
 	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)

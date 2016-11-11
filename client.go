@@ -43,14 +43,14 @@ var (
 
 // Client represents a single connection to radiko API endpoint.
 type Client struct {
-	// TODO: 再設計
 	URL *url.URL
 
-	httpClient *http.Client
+	httpClient      *http.Client
+	authTokenHeader string
 }
 
 // New returns new Client struct.
-func New() (*Client, error) {
+func New(authToken string) (*Client, error) {
 	parsedURL, err := url.Parse(defaultEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to parse url: %s", err)
@@ -61,13 +61,13 @@ func New() (*Client, error) {
 	}
 
 	return &Client{
-		URL:        parsedURL,
-		httpClient: httpClient,
+		URL:             parsedURL,
+		httpClient:      httpClient,
+		authTokenHeader: authToken,
 	}, nil
 }
 
 func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, params *Params) (*http.Request, error) {
-	// TODO: 再設計
 	u := *c.URL
 	u.Path = path.Join(c.URL.Path, apiEndpoint)
 
@@ -100,7 +100,20 @@ func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, param
 	return req, nil
 }
 
-func (c *Client) do(req *http.Request) (*http.Response, error) {
+func (c *Client) setAuthTokenHeader(authToken string) {
+	c.authTokenHeader = authToken
+}
+
+// Call executes an API request.
+func (c *Client) Call(req *http.Request) (*http.Response, error) {
+	return c.httpClient.Do(req)
+}
+
+// CallWithAuthTokenHeader executes an API request with auth_token in HTTP Header.
+func (c *Client) CallWithAuthTokenHeader(req *http.Request) (*http.Response, error) {
+	if c.authTokenHeader != "" {
+		req.Header.Set(radikoAuthTokenHeader, c.authTokenHeader)
+	}
 	return c.httpClient.Do(req)
 }
 

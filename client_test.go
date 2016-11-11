@@ -12,7 +12,7 @@ func teardown() {
 }
 
 func TestNew(t *testing.T) {
-	_, err := New()
+	_, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
@@ -24,7 +24,7 @@ func TestEmptyHTTPClient(t *testing.T) {
 	SetHTTPClient(c)
 	defer teardown()
 
-	client, err := New()
+	client, err := New("")
 	if err == nil {
 		t.Errorf(
 			"Should detect HTTPClient is nil.\nclient: %v", client)
@@ -37,7 +37,7 @@ func TestSetHTTPClient(t *testing.T) {
 	SetHTTPClient(&http.Client{Timeout: expected})
 	defer teardown()
 
-	client, err := New()
+	client, err := New("")
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)
 	}

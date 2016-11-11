@@ -60,7 +60,7 @@ func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date ti
 		return nil, err
 	}
 
-	resp, err := c.do(req)
+	resp, err := c.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (Sta
 		return nil, err
 	}
 
-	resp, err := c.do(req)
+	resp, err := c.Call(req)
 	if err != nil {
 		return nil, err
 	}

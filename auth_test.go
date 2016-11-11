@@ -6,7 +6,7 @@ import (
 )
 
 func TestAuth1Fms(t *testing.T) {
-	client, err := New()
+	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
@@ -26,7 +26,7 @@ func TestAuth2Fms(t *testing.T) {
 		t.Skip("Skipping test in limited mode.")
 	}
 
-	client, err := New()
+	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
