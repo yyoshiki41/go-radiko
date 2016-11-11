@@ -13,9 +13,6 @@ import (
 const (
 	defaultHTTPTimeout = 120 * time.Second
 	defaultEndpoint    = "https://radiko.jp"
-	// TODO: need?
-	// envEndpoint is the environment variable that overrrides the defaultEndpoint.
-	envEndpoint = "RADIKO_ENDPOINT"
 
 	apiV2 = "v2"
 	apiV3 = "v3"
@@ -49,7 +46,7 @@ type Client struct {
 	authTokenHeader string
 }
 
-// New returns new Client struct.
+// New returns a new Client struct.
 func New(authToken string) (*Client, error) {
 	parsedURL, err := url.Parse(defaultEndpoint)
 	if err != nil {
