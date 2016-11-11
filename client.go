@@ -86,6 +86,9 @@ func (c *Client) newRequest(verb, apiEndpoint string, params *Params) (*http.Req
 	for k, v := range params.header {
 		req.Header.Set(k, v)
 	}
+	// For backwards compatibility with HTTP/1.0
+	// https://tools.ietf.org/html/rfc7234#page-29
+	req.Header.Set("pragma", "no-cache")
 
 	return req, nil
 }

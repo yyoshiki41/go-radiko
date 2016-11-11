@@ -23,7 +23,6 @@ func (c *Client) TimeshiftPlaylistM3U8(ctx context.Context, authToken, stationID
 			"l":          "15", // must?
 		},
 		header: map[string]string{
-			"pragma":              "no-cache",
 			radikoAuthTokenHeader: authToken,
 		},
 	})
