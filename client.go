@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	defaultHTTPTimeout = 120 * time.Second
 	defaultEndpoint    = "https://radiko.jp"
+	defaultHTTPTimeout = 120 * time.Second
 
 	apiV2 = "v2"
 	apiV3 = "v3"
