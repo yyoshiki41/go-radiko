@@ -2,8 +2,26 @@ package radiko
 
 import (
 	"context"
+	"path"
 	"testing"
 )
+
+func TestAuthorizeToken(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Fatalf("Failed to construct client: %s", err)
+	}
+
+	ctx := context.Background()
+	pngPath := path.Join(testdataDir, "authkey.png")
+	authToken, err := client.AuthorizeToken(ctx, pngPath)
+	if err != nil {
+		t.Error(err)
+	}
+	if len(authToken) == 0 {
+		t.Errorf("AuthToken is empty.")
+	}
+}
 
 func TestAuth1Fms(t *testing.T) {
 	client, err := New("")
@@ -31,15 +49,4 @@ func TestAuth2Fms(t *testing.T) {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
 	_ = client
-
-	/* TODO: Implement mock server
-	ctx := context.Background()
-	res, err := client.Auth2Fms(ctx, authToken, partialKey)
-	if err != nil {
-		t.Errorf("Error: %s", err)
-	}
-	if len(res) == 0 {
-		t.Error("Empty results")
-	}
-	*/
 }
