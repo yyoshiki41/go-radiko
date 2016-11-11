@@ -1,6 +1,7 @@
 package radiko
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -45,7 +46,7 @@ type Client struct {
 	// TODO: 再設計
 	URL *url.URL
 
-	HTTPClient *http.Client
+	httpClient *http.Client
 }
 
 // New returns new Client struct.
@@ -61,11 +62,11 @@ func New() (*Client, error) {
 
 	return &Client{
 		URL:        parsedURL,
-		HTTPClient: httpClient,
+		httpClient: httpClient,
 	}, nil
 }
 
-func (c *Client) newRequest(verb, apiEndpoint string, params *Params) (*http.Request, error) {
+func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, params *Params) (*http.Request, error) {
 	// TODO: 再設計
 	u := *c.URL
 	u.Path = path.Join(c.URL.Path, apiEndpoint)
@@ -82,6 +83,12 @@ func (c *Client) newRequest(verb, apiEndpoint string, params *Params) (*http.Req
 		return nil, err
 	}
 
+	// Set the request's context
+	if ctx == nil {
+		return nil, errors.New("Context is nil.")
+	}
+	req.WithContext(ctx)
+
 	// Add request headers
 	for k, v := range params.header {
 		req.Header.Set(k, v)
@@ -91,6 +98,10 @@ func (c *Client) newRequest(verb, apiEndpoint string, params *Params) (*http.Req
 	req.Header.Set("pragma", "no-cache")
 
 	return req, nil
+}
+
+func (c *Client) do(req *http.Request) (*http.Response, error) {
+	return c.httpClient.Do(req)
 }
 
 // Params is the list of options to pass to the request.

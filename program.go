@@ -55,13 +55,12 @@ func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date ti
 		"program/date", internal.ProgramsDate(date),
 		fmt.Sprintf("%s.xml", areaID))
 
-	req, err := c.newRequest("GET", apiEndpoint, &Params{})
+	req, err := c.newRequest(ctx, "GET", apiEndpoint, &Params{})
 	if err != nil {
 		return nil, err
 	}
 
-	req = req.WithContext(ctx)
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +93,7 @@ func (c *Client) GetStations(ctx context.Context, date time.Time) (Stations, err
 func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (Stations, error) {
 	apiEndpoint := apiPath(apiV2, "program/now")
 
-	req, err := c.newRequest("GET", apiEndpoint, &Params{
+	req, err := c.newRequest(ctx, "GET", apiEndpoint, &Params{
 		query: map[string]string{
 			"area_id": areaID,
 		},
@@ -103,8 +102,7 @@ func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (Sta
 		return nil, err
 	}
 
-	req = req.WithContext(ctx)
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.do(req)
 	if err != nil {
 		return nil, err
 	}

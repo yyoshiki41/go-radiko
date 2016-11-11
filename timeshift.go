@@ -15,7 +15,7 @@ func (c *Client) TimeshiftPlaylistM3U8(ctx context.Context, authToken, stationID
 	}
 
 	apiEndpoint := apiPath(apiV2, "ts/playlist.m3u8")
-	req, err := c.newRequest("POST", apiEndpoint, &Params{
+	req, err := c.newRequest(ctx, "POST", apiEndpoint, &Params{
 		query: map[string]string{
 			"station_id": stationID,
 			"ft":         prog.Ft,
@@ -26,7 +26,8 @@ func (c *Client) TimeshiftPlaylistM3U8(ctx context.Context, authToken, stationID
 			radikoAuthTokenHeader: authToken,
 		},
 	})
-	resp, err := c.HTTPClient.Do(req)
+
+	resp, err := c.do(req)
 	if err != nil {
 		return "", err
 	}

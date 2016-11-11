@@ -41,7 +41,7 @@ func TestSetHTTPClient(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)
 	}
-	if client.HTTPClient.Timeout != expected {
-		t.Errorf("expected %d, but %d", expected, client.HTTPClient.Timeout)
+	if client.httpClient.Timeout != expected {
+		t.Errorf("expected %d, but %d", expected, client.httpClient.Timeout)
 	}
 }

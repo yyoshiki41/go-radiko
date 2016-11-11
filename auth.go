@@ -11,7 +11,7 @@ import (
 func (c *Client) Auth1Fms(ctx context.Context) (string, int64, int64, error) {
 	apiEndpoint := apiPath(apiV2, "auth1_fms")
 
-	req, err := c.newRequest("POST", apiEndpoint, &Params{
+	req, err := c.newRequest(ctx, "POST", apiEndpoint, &Params{
 		header: map[string]string{
 			radikoAppHeader:        radikoApp,
 			radikoAppVersionHeader: radikoAppVersion,
@@ -23,8 +23,7 @@ func (c *Client) Auth1Fms(ctx context.Context) (string, int64, int64, error) {
 		return "", 0, 0, err
 	}
 
-	req = req.WithContext(ctx)
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.do(req)
 	defer resp.Body.Close()
 
 	authToken := resp.Header.Get(radikoAuthTokenHeader)
@@ -47,7 +46,7 @@ func (c *Client) Auth1Fms(ctx context.Context) (string, int64, int64, error) {
 func (c *Client) Auth2Fms(ctx context.Context, authToken, partialKey string) ([]string, error) {
 	apiEndpoint := apiPath(apiV2, "auth2_fms")
 
-	req, err := c.newRequest("POST", apiEndpoint, &Params{
+	req, err := c.newRequest(ctx, "POST", apiEndpoint, &Params{
 		header: map[string]string{
 			radikoAppHeader:        radikoApp,
 			radikoAppVersionHeader: radikoAppVersion,
@@ -61,8 +60,7 @@ func (c *Client) Auth2Fms(ctx context.Context, authToken, partialKey string) ([]
 		return nil, err
 	}
 
-	req = req.WithContext(ctx)
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.do(req)
 	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
