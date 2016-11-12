@@ -30,7 +30,7 @@ func TestGetURIFromM3U8(t *testing.T) {
 		t.Error(err)
 	}
 	if u != expected {
-		t.Errorf("expected %d, but %d", expected, u)
+		t.Errorf("expected %s, but %s", expected, u)
 	}
 }
 

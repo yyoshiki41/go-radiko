@@ -81,7 +81,7 @@ func TestSetAuthTokenHeader(t *testing.T) {
 	const expected = "test_token"
 	client.setAuthTokenHeader(expected)
 	if expected != client.authTokenHeader {
-		t.Errorf("expected %d, but %d", expected, client.authTokenHeader)
+		t.Errorf("expected %s, but %s", expected, client.authTokenHeader)
 	}
 }
 
