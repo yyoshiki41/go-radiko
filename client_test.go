@@ -45,3 +45,16 @@ func TestSetHTTPClient(t *testing.T) {
 		t.Errorf("expected %d, but %d", expected, client.httpClient.Timeout)
 	}
 }
+
+func TestSetAuthTokenHeader(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Errorf("Failed to construct client: %s", err)
+	}
+
+	const expected = "test_token"
+	client.setAuthTokenHeader(expected)
+	if expected != client.authTokenHeader {
+		t.Errorf("expected %d, but %d", expected, client.authTokenHeader)
+	}
+}
