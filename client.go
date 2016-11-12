@@ -84,7 +84,7 @@ func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, param
 	if ctx == nil {
 		return nil, errors.New("Context is nil.")
 	}
-	req.WithContext(ctx)
+	req = req.WithContext(ctx)
 
 	// Add request headers
 	for k, v := range params.header {
