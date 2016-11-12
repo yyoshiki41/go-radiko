@@ -2,6 +2,9 @@ package radiko
 
 import (
 	"context"
+	"encoding/xml"
+	"io/ioutil"
+	"path"
 	"testing"
 	"time"
 
@@ -118,5 +121,35 @@ func TestGetProgramByStartTime(t *testing.T) {
 	expected := internal.Datetime(end)
 	if expected != prog.To {
 		t.Errorf("expected %s, but %s", expected, prog.To)
+	}
+}
+
+func TestGetProgramByStartTimeEmptyStationID(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Fatalf("Failed to construct client: %s", err)
+	}
+
+	_, err = client.GetProgramByStartTime(context.Background(), "", time.Now())
+	if err == nil {
+		t.Error("Should detect error.")
+	}
+}
+
+func TestStations(t *testing.T) {
+	b, err := ioutil.ReadFile(path.Join(testdataDir, "stations.xml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var entity stationsEntity
+	if err = xml.Unmarshal(b, &entity); err != nil {
+		t.Fatal(err)
+	}
+	s := entity.stations()
+
+	const expected = 2
+	if expected != len(s) {
+		t.Errorf("expected number of stations %d, but %d.\nstations: %v", expected, len(s), s)
 	}
 }

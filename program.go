@@ -75,7 +75,7 @@ func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date ti
 	if err = xml.Unmarshal(b, &entity); err != nil {
 		return nil, err
 	}
-	return entity.stations(), err
+	return entity.stations(), nil
 }
 
 // GetStations returns program's meta-info in the current location.
@@ -118,7 +118,7 @@ func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (Sta
 		return nil, err
 	}
 
-	return entity.stations(), err
+	return entity.stations(), nil
 }
 
 // GetNowPrograms returns program's meta-info in the current location.
@@ -135,6 +135,10 @@ func (c *Client) GetNowPrograms(ctx context.Context) (Stations, error) {
 // GetProgramByStartTime returns a specified program.
 // This API wrapes GetStations.
 func (c *Client) GetProgramByStartTime(ctx context.Context, stationID string, start time.Time) (*Prog, error) {
+	if stationID == "" {
+		return nil, errors.New("StationID is empty.")
+	}
+
 	stations, err := c.GetStations(ctx, start)
 	if err != nil {
 		return nil, err
