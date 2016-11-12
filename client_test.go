@@ -1,7 +1,9 @@
 package radiko
 
 import (
+	"context"
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 )
@@ -31,6 +33,81 @@ func TestEmptyHTTPClient(t *testing.T) {
 	}
 }
 
+func TestNewRequest(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Fatalf("Failed to construct client: %s", err)
+	}
+
+	ctx := context.Background()
+	_, err = client.newRequest(ctx, "GET", "", &Params{})
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestNewRequestWithContext(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Fatalf("Failed to construct client: %s", err)
+	}
+
+	timeout := 100 * time.Millisecond
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	_, err = client.newRequest(ctx, "GET", "", &Params{})
+	if err != nil {
+		t.Error(err)
+	}
+
+	select {
+	case <-time.After(3 * time.Second):
+		t.Fatalf("context: %v", ctx)
+	case <-ctx.Done():
+	}
+
+	if ctx.Err() == nil {
+		t.Errorf("Shoud detect the context deadline exceeded.\n%v", ctx)
+	}
+}
+
+func TestSetAuthTokenHeader(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Errorf("Failed to construct client: %s", err)
+	}
+
+	const expected = "test_token"
+	client.setAuthTokenHeader(expected)
+	if expected != client.authTokenHeader {
+		t.Errorf("expected %d, but %d", expected, client.authTokenHeader)
+	}
+}
+
+func TestCall(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Errorf("Failed to construct client: %s", err)
+	}
+
+	ctx := context.Background()
+	req, err := client.newRequest(ctx, "GET", "", &Params{})
+	if err != nil {
+		t.Error(err)
+	}
+	resp, err := client.Call(req)
+	if err != nil {
+		t.Error(err)
+	}
+	defer resp.Body.Close()
+
+	const expected = 200
+	if actual := resp.StatusCode; actual != expected {
+		t.Errorf("expected %d, but StatusCode is %d.", expected, actual)
+	}
+}
+
 func TestSetHTTPClient(t *testing.T) {
 	const expected = 1 * time.Second
 
@@ -46,15 +123,17 @@ func TestSetHTTPClient(t *testing.T) {
 	}
 }
 
-func TestSetAuthTokenHeader(t *testing.T) {
-	client, err := New("")
-	if err != nil {
-		t.Errorf("Failed to construct client: %s", err)
+func TestAPIPath(t *testing.T) {
+	const path = "test"
+	var apiEndpoint string
+
+	apiEndpoint = apiPath(apiV2, path)
+	if !(strings.HasPrefix(apiEndpoint, apiV2+"/") && strings.HasSuffix(apiEndpoint, "/"+path)) {
+		t.Errorf("invalid apiEndpoint: %s", apiEndpoint)
 	}
 
-	const expected = "test_token"
-	client.setAuthTokenHeader(expected)
-	if expected != client.authTokenHeader {
-		t.Errorf("expected %d, but %d", expected, client.authTokenHeader)
+	apiEndpoint = apiPath(apiV3, path)
+	if !(strings.HasPrefix(apiEndpoint, apiV3+"/") && strings.HasSuffix(apiEndpoint, "/"+path)) {
+		t.Errorf("invalid apiEndpoint: %s", apiEndpoint)
 	}
 }
