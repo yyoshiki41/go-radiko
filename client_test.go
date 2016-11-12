@@ -72,6 +72,19 @@ func TestNewRequestWithContext(t *testing.T) {
 	}
 }
 
+func TestNewRequestWithEmptyContext(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Fatalf("Failed to construct client: %s", err)
+	}
+
+	var ctx context.Context
+	_, err = client.newRequest(ctx, "GET", "", &Params{})
+	if err == nil {
+		t.Error("Should detect empty context.")
+	}
+}
+
 func TestSetAuthTokenHeader(t *testing.T) {
 	client, err := New("")
 	if err != nil {
@@ -105,6 +118,28 @@ func TestCall(t *testing.T) {
 	const expected = 200
 	if actual := resp.StatusCode; actual != expected {
 		t.Errorf("expected %d, but StatusCode is %d.", expected, actual)
+	}
+}
+
+func TestCallWithAuthTokenHeader(t *testing.T) {
+	const expected = "auth_token"
+	client, err := New(expected)
+	if err != nil {
+		t.Errorf("Failed to construct client: %s", err)
+	}
+
+	req, err := client.newRequest(context.Background(), "GET", "", &Params{})
+	if err != nil {
+		t.Error(err)
+	}
+	resp, err := client.CallWithAuthTokenHeader(req)
+	if err != nil {
+		t.Error(err)
+	}
+	defer resp.Body.Close()
+
+	if actual := req.Header.Get(radikoAuthTokenHeader); actual != expected {
+		t.Errorf("expected %s, but %s.", expected, actual)
 	}
 }
 
