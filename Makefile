@@ -18,11 +18,8 @@ test-out:
 	go test -outjp $(PKGS)
 
 test-ci:
-	@echo "" > coverage.txt; \
-	for d in $(PKGS); do \
-		go test -outjp -coverprofile=profile.out -covermode=atomic $$d || exit 1; \
-		[ -f profile.out ] && cat profile.out >> coverage.txt && rm profile.out || true; \
-	done
+	@echo "go test -outjp"
+	@go test -outjp -race -coverprofile=coverage.txt -covermode=atomic $(PKGS)
 
 get-deps:
 	@echo "go get go-radiko dependencies"
