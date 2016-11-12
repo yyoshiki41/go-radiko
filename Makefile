@@ -1,4 +1,4 @@
-PKGS=$(shell go list ./...)
+PKGS=$(shell go list ./... | grep -v examples)
 
 .PHONY: all help init test test-out
 
@@ -18,8 +18,11 @@ test-out:
 	go test -outjp $(PKGS)
 
 test-ci:
-	@echo "go test"
-	@go test -outjp -race -coverprofile=coverage.txt -covermode=atomic $(PKGS)
+	@echo "" > coverage.txt; \
+	for d in $(PKGS); do \
+		go test -outjp -coverprofile=profile.out -covermode=atomic $$d || exit 1; \
+		[ -f profile.out ] && cat profile.out >> coverage.txt && rm profile.out || true; \
+	done
 
 get-deps:
 	@echo "go get go-radiko dependencies"
