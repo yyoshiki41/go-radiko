@@ -79,7 +79,7 @@ func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date ti
 }
 
 // GetStations returns program's meta-info in the current location.
-// This API wrapes GetStationsByAreaID.
+// This API wraps GetStationsByAreaID.
 func (c *Client) GetStations(ctx context.Context, date time.Time) (Stations, error) {
 	areaID, err := AreaID()
 	if err != nil {
@@ -122,7 +122,7 @@ func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (Sta
 }
 
 // GetNowPrograms returns program's meta-info in the current location.
-// This API wrapes GetNowProgramsByAreaID.
+// This API wraps GetNowProgramsByAreaID.
 func (c *Client) GetNowPrograms(ctx context.Context) (Stations, error) {
 	areaID, err := AreaID()
 	if err != nil {
@@ -133,7 +133,7 @@ func (c *Client) GetNowPrograms(ctx context.Context) (Stations, error) {
 }
 
 // GetProgramByStartTime returns a specified program.
-// This API wrapes GetStations.
+// This API wraps GetStations.
 func (c *Client) GetProgramByStartTime(ctx context.Context, stationID string, start time.Time) (*Prog, error) {
 	if stationID == "" {
 		return nil, errors.New("StationID is empty.")
