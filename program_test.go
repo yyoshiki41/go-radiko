@@ -2,8 +2,7 @@ package radiko
 
 import (
 	"context"
-	"encoding/xml"
-	"io/ioutil"
+	"os"
 	"path"
 	"testing"
 	"time"
@@ -151,20 +150,19 @@ func TestGetWeeklyPrograms(t *testing.T) {
 	}
 }
 
-func TestStations(t *testing.T) {
-	b, err := ioutil.ReadFile(path.Join(testdataDir, "stations.xml"))
+func TestDecodeStationsData(t *testing.T) {
+	file, err := os.Open(path.Join(testdataDir, "stations.xml"))
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	var entity stationsEntity
-	if err = xml.Unmarshal(b, &entity); err != nil {
-		t.Fatal(err)
+	var d stationsData
+	if err = decodeStationsData(file, &d); err != nil {
+		t.Error(err)
 	}
-	s := entity.stations()
 
 	const expected = 2
-	if expected != len(s) {
-		t.Errorf("expected number of stations %d, but %d.\nstations: %v", expected, len(s), s)
+	if s := d.stations(); expected != len(s) {
+		t.Errorf("expected number of stations %d, but %d.", expected, len(s))
 	}
 }

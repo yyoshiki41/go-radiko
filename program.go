@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"path"
 	"time"
@@ -66,16 +67,11 @@ func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date ti
 	}
 	defer resp.Body.Close()
 
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+	var d stationsData
+	if err = decodeStationsData(resp.Body, &d); err != nil {
 		return nil, err
 	}
-
-	var entity stationsEntity
-	if err = xml.Unmarshal(b, &entity); err != nil {
-		return nil, err
-	}
-	return entity.stations(), nil
+	return d.stations(), nil
 }
 
 // GetStations returns program's meta-info in the current location.
@@ -108,17 +104,11 @@ func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (Sta
 	}
 	defer resp.Body.Close()
 
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+	var d stationsData
+	if err = decodeStationsData(resp.Body, &d); err != nil {
 		return nil, err
 	}
-
-	var entity stationsEntity
-	if err = xml.Unmarshal(b, &entity); err != nil {
-		return nil, err
-	}
-
-	return entity.stations(), nil
+	return d.stations(), nil
 }
 
 // GetNowPrograms returns program's meta-info in the current location.
@@ -179,21 +169,15 @@ func (c *Client) GetWeeklyPrograms(ctx context.Context, stationID string) (Stati
 	}
 	defer resp.Body.Close()
 
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+	var d stationsData
+	if err = decodeStationsData(resp.Body, &d); err != nil {
 		return nil, err
 	}
-
-	var entity stationsEntity
-	if err = xml.Unmarshal(b, &entity); err != nil {
-		return nil, err
-	}
-
-	return entity.stations(), nil
+	return d.stations(), nil
 }
 
-// stationsEntity includes a response struct for client's users.
-type stationsEntity struct {
+// stationsData includes a response struct for client's users.
+type stationsData struct {
 	XMLName     xml.Name `xml:"radiko"`
 	XMLStations struct {
 		XMLName  xml.Name `xml:"stations"`
@@ -202,6 +186,19 @@ type stationsEntity struct {
 }
 
 // stations returns Stations which is a response struct for client's users.
-func (e *stationsEntity) stations() Stations {
-	return e.XMLStations.Stations
+func (d *stationsData) stations() Stations {
+	return d.XMLStations.Stations
+}
+
+// decodeStationsData parses the XML-encoded data and stores the result.
+func decodeStationsData(input io.Reader, stations *stationsData) error {
+	b, err := ioutil.ReadAll(input)
+	if err != nil {
+		return err
+	}
+
+	if err = xml.Unmarshal(b, stations); err != nil {
+		return err
+	}
+	return nil
 }
