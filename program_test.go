@@ -136,6 +136,21 @@ func TestGetProgramByStartTimeEmptyStationID(t *testing.T) {
 	}
 }
 
+func TestGetWeeklyPrograms(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Fatalf("Failed to construct client: %s", err)
+	}
+
+	programs, err := client.GetWeeklyPrograms(context.Background(), "LFR")
+	if err != nil {
+		t.Error(err)
+	}
+	if len(programs) == 0 {
+		t.Error("Programs is nil.")
+	}
+}
+
 func TestStations(t *testing.T) {
 	b, err := ioutil.ReadFile(path.Join(testdataDir, "stations.xml"))
 	if err != nil {

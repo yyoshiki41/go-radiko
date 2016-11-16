@@ -162,6 +162,36 @@ func (c *Client) GetProgramByStartTime(ctx context.Context, stationID string, st
 	return prog, nil
 }
 
+// GetWeeklyPrograms returns weekly programs.
+func (c *Client) GetWeeklyPrograms(ctx context.Context, stationID string) (Stations, error) {
+	apiEndpoint := path.Join(apiV3,
+		"program/station/weekly",
+		fmt.Sprintf("%s.xml", stationID))
+
+	req, err := c.newRequest(ctx, "GET", apiEndpoint, &Params{})
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var entity stationsEntity
+	if err = xml.Unmarshal(b, &entity); err != nil {
+		return nil, err
+	}
+
+	return entity.stations(), nil
+}
+
 // stationsEntity includes a response struct for client's users.
 type stationsEntity struct {
 	XMLName     xml.Name `xml:"radiko"`
