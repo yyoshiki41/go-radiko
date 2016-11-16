@@ -46,6 +46,25 @@ func TestNewRequest(t *testing.T) {
 	}
 }
 
+func TestNewRequestWithAuthToken(t *testing.T) {
+	const expected = "auth_token"
+
+	client, err := New(expected)
+	if err != nil {
+		t.Errorf("Failed to construct client: %s", err)
+	}
+
+	req, err := client.newRequest(context.Background(), "GET", "", &Params{
+		setAuthToken: true,
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	if actual := req.Header.Get(radikoAuthTokenHeader); actual != expected {
+		t.Errorf("expected %s, but %s.", expected, actual)
+	}
+}
+
 func TestNewRequestWithContext(t *testing.T) {
 	client, err := New("")
 	if err != nil {
