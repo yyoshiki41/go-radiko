@@ -3,7 +3,6 @@ package radiko
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"path"
@@ -50,7 +49,7 @@ type Client struct {
 func New(authToken string) (*Client, error) {
 	parsedURL, err := url.Parse(defaultEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to parse url: %s", err)
+		return nil, err
 	}
 
 	if httpClient == nil {
@@ -62,6 +61,10 @@ func New(authToken string) (*Client, error) {
 		httpClient:      httpClient,
 		authTokenHeader: authToken,
 	}, nil
+}
+
+func (c *Client) setAuthTokenHeader(authToken string) {
+	c.authTokenHeader = authToken
 }
 
 func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, params *Params) (*http.Request, error) {
@@ -93,24 +96,16 @@ func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, param
 	// For backwards compatibility with HTTP/1.0
 	// https://tools.ietf.org/html/rfc7234#page-29
 	req.Header.Set("pragma", "no-cache")
+	// Add auth_token in HTTP Header
+	if params.setAuthToken {
+		req.Header.Set(radikoAuthTokenHeader, c.authTokenHeader)
+	}
 
 	return req, nil
 }
 
-func (c *Client) setAuthTokenHeader(authToken string) {
-	c.authTokenHeader = authToken
-}
-
-// Call executes an API request.
-func (c *Client) Call(req *http.Request) (*http.Response, error) {
-	return c.httpClient.Do(req)
-}
-
-// CallWithAuthTokenHeader executes an API request with auth_token in HTTP Header.
-func (c *Client) CallWithAuthTokenHeader(req *http.Request) (*http.Response, error) {
-	if c.authTokenHeader != "" {
-		req.Header.Set(radikoAuthTokenHeader, c.authTokenHeader)
-	}
+// Do executes an API request.
+func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	return c.httpClient.Do(req)
 }
 
@@ -120,6 +115,8 @@ type Params struct {
 	query map[string]string
 	// header is a map of key-value pairs that will be added to the Request.
 	header map[string]string
+	// setAuthToken is a boolean value. If true, set auth_token in HTTP Header.
+	setAuthToken bool
 }
 
 // SetHTTPClient overrides the default HTTP client.

@@ -22,9 +22,10 @@ func (c *Client) TimeshiftPlaylistM3U8(ctx context.Context, stationID string, st
 			"to":         prog.To,
 			"l":          "15", // must?
 		},
+		setAuthToken: true,
 	})
 
-	resp, err := c.CallWithAuthTokenHeader(req)
+	resp, err := c.Do(req)
 	if err != nil {
 		return "", err
 	}

@@ -98,7 +98,7 @@ func TestSetAuthTokenHeader(t *testing.T) {
 	}
 }
 
-func TestCall(t *testing.T) {
+func TestDo(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)
@@ -109,7 +109,7 @@ func TestCall(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	resp, err := client.Call(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		t.Error(err)
 	}
@@ -118,28 +118,6 @@ func TestCall(t *testing.T) {
 	const expected = 200
 	if actual := resp.StatusCode; actual != expected {
 		t.Errorf("expected %d, but StatusCode is %d.", expected, actual)
-	}
-}
-
-func TestCallWithAuthTokenHeader(t *testing.T) {
-	const expected = "auth_token"
-	client, err := New(expected)
-	if err != nil {
-		t.Errorf("Failed to construct client: %s", err)
-	}
-
-	req, err := client.newRequest(context.Background(), "GET", "", &Params{})
-	if err != nil {
-		t.Error(err)
-	}
-	resp, err := client.CallWithAuthTokenHeader(req)
-	if err != nil {
-		t.Error(err)
-	}
-	defer resp.Body.Close()
-
-	if actual := req.Header.Get(radikoAuthTokenHeader); actual != expected {
-		t.Errorf("expected %s, but %s.", expected, actual)
 	}
 }
 
