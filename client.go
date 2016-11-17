@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"path"
 	"time"
@@ -34,7 +35,10 @@ const (
 )
 
 var (
-	httpClient = &http.Client{Timeout: defaultHTTPTimeout}
+	httpClient = &http.Client{
+		Timeout: defaultHTTPTimeout,
+		Jar:     nil,
+	}
 )
 
 // Client represents a single connection to radiko API endpoint.
@@ -65,6 +69,10 @@ func New(authToken string) (*Client, error) {
 
 func (c *Client) setAuthTokenHeader(authToken string) {
 	c.authTokenHeader = authToken
+}
+
+func (c *Client) setJar(jar *cookiejar.Jar) {
+	c.httpClient.Jar = jar
 }
 
 func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, params *Params) (*http.Request, error) {

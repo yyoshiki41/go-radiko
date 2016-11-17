@@ -3,6 +3,7 @@ package radiko
 import (
 	"context"
 	"net/http"
+	"net/http/cookiejar"
 	"strings"
 	"testing"
 	"time"
@@ -114,6 +115,26 @@ func TestSetAuthTokenHeader(t *testing.T) {
 	client.setAuthTokenHeader(expected)
 	if expected != client.authTokenHeader {
 		t.Errorf("expected %s, but %s", expected, client.authTokenHeader)
+	}
+}
+
+func TestSetJar(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Errorf("Failed to construct client: %s", err)
+	}
+
+	if client.httpClient.Jar != nil {
+		t.Error("httpClient.Jar should be nil.")
+	}
+
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	client.setJar(jar)
+	if client.httpClient.Jar == nil {
+		t.Error("httpClient.Jar is nil.")
 	}
 }
 
