@@ -3,6 +3,7 @@ package radiko
 import (
 	"context"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -62,13 +63,18 @@ func New(authToken string) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) setAuthTokenHeader(authToken string) {
-	c.authTokenHeader = authToken
+// Jar returns cookieJar in httpClient.
+func (c *Client) Jar() http.CookieJar {
+	return c.httpClient.Jar
 }
 
 // SetJar sets cookieJar in httpClient.
 func (c *Client) SetJar(jar *cookiejar.Jar) {
 	c.httpClient.Jar = jar
+}
+
+func (c *Client) setAuthTokenHeader(authToken string) {
+	c.authTokenHeader = authToken
 }
 
 func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, params *Params) (*http.Request, error) {
@@ -82,7 +88,7 @@ func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, param
 	}
 	u.RawQuery = urlQuery.Encode()
 
-	req, err := http.NewRequest(verb, u.String(), nil)
+	req, err := http.NewRequest(verb, u.String(), params.body)
 	if err != nil {
 		return nil, err
 	}
@@ -115,6 +121,7 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 
 // Params is the list of options to pass to the request.
 type Params struct {
+	body io.Reader
 	// query is a map of key-value pairs that will be added to the Request.
 	query map[string]string
 	// header is a map of key-value pairs that will be added to the Request.

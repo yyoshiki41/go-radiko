@@ -10,7 +10,7 @@ import (
 )
 
 // Should restore defaultHTTPClient if SetHTTPClient is called.
-func teardown() {
+func teardownHTTPClient() {
 	SetHTTPClient(&http.Client{Timeout: defaultHTTPTimeout})
 }
 
@@ -25,7 +25,7 @@ func TestEmptyHTTPClient(t *testing.T) {
 	var c *http.Client
 
 	SetHTTPClient(c)
-	defer teardown()
+	defer teardownHTTPClient()
 
 	client, err := New("")
 	if err == nil {
@@ -165,7 +165,7 @@ func TestSetHTTPClient(t *testing.T) {
 	const expected = 1 * time.Second
 
 	SetHTTPClient(&http.Client{Timeout: expected})
-	defer teardown()
+	defer teardownHTTPClient()
 
 	client, err := New("")
 	if err != nil {
