@@ -34,12 +34,7 @@ const (
 	radikoDevice     = "pc"
 )
 
-var (
-	httpClient = &http.Client{
-		Timeout: defaultHTTPTimeout,
-		Jar:     nil,
-	}
-)
+var httpClient = &http.Client{Timeout: defaultHTTPTimeout}
 
 // Client represents a single connection to radiko API endpoint.
 type Client struct {
@@ -71,7 +66,8 @@ func (c *Client) setAuthTokenHeader(authToken string) {
 	c.authTokenHeader = authToken
 }
 
-func (c *Client) setJar(jar *cookiejar.Jar) {
+// SetJar sets cookieJar in httpClient.
+func (c *Client) SetJar(jar *cookiejar.Jar) {
 	c.httpClient.Jar = jar
 }
 

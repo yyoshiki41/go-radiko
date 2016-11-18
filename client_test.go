@@ -132,7 +132,7 @@ func TestSetJar(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	client.setJar(jar)
+	client.SetJar(jar)
 	if client.httpClient.Jar == nil {
 		t.Error("httpClient.Jar is nil.")
 	}
