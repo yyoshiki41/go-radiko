@@ -118,14 +118,21 @@ func TestSetAuthTokenHeader(t *testing.T) {
 	}
 }
 
-func TestSetJar(t *testing.T) {
+func TestJar(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)
 	}
 
-	if client.httpClient.Jar != nil {
+	if client.Jar() != nil {
 		t.Error("httpClient.Jar should be nil.")
+	}
+}
+
+func TestSetJar(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Errorf("Failed to construct client: %s", err)
 	}
 
 	jar, err := cookiejar.New(nil)
@@ -133,6 +140,8 @@ func TestSetJar(t *testing.T) {
 		t.Fatal(err)
 	}
 	client.SetJar(jar)
+	defer teardownHTTPClient()
+
 	if client.httpClient.Jar == nil {
 		t.Error("httpClient.Jar is nil.")
 	}

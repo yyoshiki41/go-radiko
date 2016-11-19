@@ -63,12 +63,12 @@ func New(authToken string) (*Client, error) {
 	}, nil
 }
 
-// Jar returns cookieJar in httpClient.
+// Jar returns the cookieJar.
 func (c *Client) Jar() http.CookieJar {
 	return c.httpClient.Jar
 }
 
-// SetJar sets cookieJar in httpClient.
+// SetJar sets the cookieJar in httpClient.
 func (c *Client) SetJar(jar *cookiejar.Jar) {
 	c.httpClient.Jar = jar
 }
