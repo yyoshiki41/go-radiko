@@ -10,7 +10,7 @@ import (
 )
 
 // Should restore defaultHTTPClient if SetHTTPClient is called.
-func teardown() {
+func teardownHTTPClient() {
 	SetHTTPClient(&http.Client{Timeout: defaultHTTPTimeout})
 }
 
@@ -25,7 +25,7 @@ func TestEmptyHTTPClient(t *testing.T) {
 	var c *http.Client
 
 	SetHTTPClient(c)
-	defer teardown()
+	defer teardownHTTPClient()
 
 	client, err := New("")
 	if err == nil {
@@ -118,23 +118,32 @@ func TestSetAuthTokenHeader(t *testing.T) {
 	}
 }
 
+func TestJar(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Errorf("Failed to construct client: %s", err)
+	}
+
+	if client.Jar() == nil {
+		t.Error("httpClient.Jar is empty.")
+	}
+}
+
 func TestSetJar(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)
 	}
 
-	if client.httpClient.Jar != nil {
-		t.Error("httpClient.Jar should be nil.")
-	}
-
-	jar, err := cookiejar.New(nil)
+	expected, err := cookiejar.New(&cookiejar.Options{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	client.SetJar(jar)
-	if client.httpClient.Jar == nil {
-		t.Error("httpClient.Jar is nil.")
+	client.SetJar(expected)
+	defer teardownHTTPClient()
+
+	if actual := client.Jar(); expected != actual {
+		t.Errorf("expected %v, but %v.", expected, actual)
 	}
 }
 
@@ -165,7 +174,7 @@ func TestSetHTTPClient(t *testing.T) {
 	const expected = 1 * time.Second
 
 	SetHTTPClient(&http.Client{Timeout: expected})
-	defer teardown()
+	defer teardownHTTPClient()
 
 	client, err := New("")
 	if err != nil {
