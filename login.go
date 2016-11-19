@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
-	"net/http/cookiejar"
 	"net/url"
 	"strconv"
 	"strings"
@@ -25,12 +24,6 @@ func (c *Client) login(ctx context.Context, mail, password string) error {
 	v := url.Values{}
 	v.Set("mail", mail)
 	v.Set("pass", password)
-
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		return err
-	}
-	c.SetJar(jar)
 
 	req, err := c.newRequest(ctx, "POST", apiEndpoint,
 		&Params{body: strings.NewReader(v.Encode())})

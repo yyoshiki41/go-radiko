@@ -47,13 +47,19 @@ type Client struct {
 
 // New returns a new Client struct.
 func New(authToken string) (*Client, error) {
-	parsedURL, err := url.Parse(defaultEndpoint)
+	if httpClient == nil {
+		return nil, errors.New("A HTTP client is nil.")
+	}
+
+	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, err
 	}
+	httpClient.Jar = jar
 
-	if httpClient == nil {
-		return nil, errors.New("A HTTP client is nil.")
+	parsedURL, err := url.Parse(defaultEndpoint)
+	if err != nil {
+		return nil, err
 	}
 
 	return &Client{

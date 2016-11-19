@@ -124,8 +124,8 @@ func TestJar(t *testing.T) {
 		t.Errorf("Failed to construct client: %s", err)
 	}
 
-	if client.Jar() != nil {
-		t.Error("httpClient.Jar should be nil.")
+	if client.Jar() == nil {
+		t.Error("httpClient.Jar is empty.")
 	}
 }
 
@@ -135,15 +135,15 @@ func TestSetJar(t *testing.T) {
 		t.Errorf("Failed to construct client: %s", err)
 	}
 
-	jar, err := cookiejar.New(nil)
+	expected, err := cookiejar.New(&cookiejar.Options{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	client.SetJar(jar)
+	client.SetJar(expected)
 	defer teardownHTTPClient()
 
-	if client.httpClient.Jar == nil {
-		t.Error("httpClient.Jar is nil.")
+	if actual := client.Jar(); expected != actual {
+		t.Errorf("expected %v, but %v.", expected, actual)
 	}
 }
 
