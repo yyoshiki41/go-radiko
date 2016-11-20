@@ -126,7 +126,7 @@ func (c *Client) GetNowPrograms(ctx context.Context) (Stations, error) {
 // This API wraps GetStations.
 func (c *Client) GetProgramByStartTime(ctx context.Context, stationID string, start time.Time) (*Prog, error) {
 	if stationID == "" {
-		return nil, errors.New("StationID is empty.")
+		return nil, errors.New("StationID is empty")
 	}
 
 	stations, err := c.GetStations(ctx, start)
@@ -147,7 +147,7 @@ func (c *Client) GetProgramByStartTime(ctx context.Context, stationID string, st
 		}
 	}
 	if prog == nil {
-		return nil, errors.New("Can not find a program.")
+		return nil, errors.New("program is not found")
 	}
 	return prog, nil
 }

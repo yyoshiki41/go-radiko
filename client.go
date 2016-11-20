@@ -48,7 +48,7 @@ type Client struct {
 // New returns a new Client struct.
 func New(authToken string) (*Client, error) {
 	if httpClient == nil {
-		return nil, errors.New("A HTTP client is nil.")
+		return nil, errors.New("httpClient is nil")
 	}
 
 	jar, err := cookiejar.New(nil)
@@ -101,7 +101,7 @@ func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, param
 
 	// Set the request's context
 	if ctx == nil {
-		return nil, errors.New("Context is nil.")
+		return nil, errors.New("Context is nil")
 	}
 	req = req.WithContext(ctx)
 
