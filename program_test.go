@@ -105,7 +105,7 @@ func TestGetProgramByStartTime(t *testing.T) {
 	n := time.Now()
 	if n.Weekday() == time.Sunday {
 		// If it is Sunday, ANN will not be broadcasted.
-		n.Add(-24 * time.Hour)
+		n = n.Add(-24 * time.Hour)
 	}
 	y, m, d := n.Date()
 	// ANN starts at 01:00 AM on Monday to Saturday in JST.
