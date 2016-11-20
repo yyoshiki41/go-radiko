@@ -1,6 +1,8 @@
 package radiko
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestGetStreamMultiURL(t *testing.T) {
 	items, err := GetStreamMultiURL("LFR")
@@ -11,5 +13,12 @@ func TestGetStreamMultiURL(t *testing.T) {
 	const expected = 4
 	if actual := len(items); expected != actual {
 		t.Errorf("expected %d, but %d", expected, actual)
+	}
+}
+
+func TestNotExistsStreamMultiURL(t *testing.T) {
+	_, err := GetStreamMultiURL("TEST_LFR")
+	if err == nil {
+		t.Error("Should detect error.")
 	}
 }
