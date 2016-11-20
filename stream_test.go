@@ -1,18 +1,9 @@
 package radiko
 
-import (
-	"context"
-	"testing"
-)
+import "testing"
 
 func TestGetStreamMultiURL(t *testing.T) {
-	client, err := New("")
-	if err != nil {
-		t.Fatalf("Failed to construct client: %s", err)
-	}
-
-	ctx := context.Background()
-	items, err := client.GetStreamMultiURL(ctx, "LFR")
+	items, err := GetStreamMultiURL("LFR")
 	if err != nil {
 		t.Error(err)
 	}

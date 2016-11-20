@@ -10,11 +10,10 @@ import (
 
 // GetStreamMultiURL returns a slice of the stream url.
 func GetStreamMultiURL(stationID string) ([]URLItem, error) {
-	endpoint := path.Join("http://radiko.jp", apiV2,
-		"station/stream_multi",
+	endpoint := path.Join(apiV2, "station/stream_multi",
 		fmt.Sprintf("%s.xml", stationID))
 
-	resp, err := http.Get(endpoint)
+	resp, err := http.Get("http://radiko.jp/" + endpoint)
 	if err != nil {
 		return nil, err
 	}
