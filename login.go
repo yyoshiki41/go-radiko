@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// Login returns Statuser that has StatusCode method.
+// Login returns the Statuser that has StatusCode method.
 func (c *Client) Login(ctx context.Context, mail, password string) (Statuser, error) {
 	err := c.login(ctx, mail, password)
 	if err != nil {
