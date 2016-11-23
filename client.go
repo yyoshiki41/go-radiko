@@ -127,6 +127,7 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 
 // Params is the list of options to pass to the request.
 type Params struct {
+	// optional body used in http.NewRequest.
 	body io.Reader
 	// query is a map of key-value pairs that will be added to the Request.
 	query map[string]string
