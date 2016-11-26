@@ -9,11 +9,6 @@ import (
 	"time"
 )
 
-// Should restore defaultHTTPClient if SetHTTPClient is called.
-func teardownHTTPClient() {
-	SetHTTPClient(&http.Client{Timeout: defaultHTTPTimeout})
-}
-
 func TestNew(t *testing.T) {
 	_, err := New("")
 	if err != nil {
@@ -105,16 +100,32 @@ func TestNewRequestWithEmptyContext(t *testing.T) {
 	}
 }
 
-func TestSetAuthTokenHeader(t *testing.T) {
+func TestClientAreaID(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)
 	}
 
-	const expected = "test_token"
-	client.setAuthTokenHeader(expected)
-	if expected != client.authTokenHeader {
-		t.Errorf("expected %s, but %s", expected, client.authTokenHeader)
+	areaID := client.AreaID()
+	if areaID == "" {
+		t.Error("httpClient.AreaID is empty.")
+	}
+	if !(strings.HasPrefix(areaID, "JP") || areaID == "OUT") {
+		t.Errorf("Invalid area id.\nAreaID: %s", areaID)
+	}
+}
+
+func TestClientSetAreaID(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Errorf("Failed to construct client: %s", err)
+	}
+
+	const expected = "JP13"
+
+	client.SetAreaID(expected)
+	if actual := client.AreaID(); expected != actual {
+		t.Errorf("expected %v, but %v.", expected, actual)
 	}
 }
 
@@ -144,6 +155,19 @@ func TestSetJar(t *testing.T) {
 
 	if actual := client.Jar(); expected != actual {
 		t.Errorf("expected %v, but %v.", expected, actual)
+	}
+}
+
+func TestSetAuthTokenHeader(t *testing.T) {
+	client, err := New("")
+	if err != nil {
+		t.Errorf("Failed to construct client: %s", err)
+	}
+
+	const expected = "test_token"
+	client.setAuthTokenHeader(expected)
+	if expected != client.authTokenHeader {
+		t.Errorf("expected %s, but %s", expected, client.authTokenHeader)
 	}
 }
 

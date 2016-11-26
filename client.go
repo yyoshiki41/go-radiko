@@ -43,6 +43,7 @@ type Client struct {
 
 	httpClient      *http.Client
 	authTokenHeader string
+	areaID          string
 }
 
 // New returns a new Client struct.
@@ -62,10 +63,16 @@ func New(authToken string) (*Client, error) {
 		return nil, err
 	}
 
+	areaID, err := AreaID()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Client{
 		URL:             parsedURL,
 		httpClient:      httpClient,
 		authTokenHeader: authToken,
+		areaID:          areaID,
 	}, nil
 }
 
@@ -77,6 +84,16 @@ func (c *Client) Jar() http.CookieJar {
 // SetJar sets the cookieJar in httpClient.
 func (c *Client) SetJar(jar *cookiejar.Jar) {
 	c.httpClient.Jar = jar
+}
+
+// AreaID returns the areaID.
+func (c *Client) AreaID() string {
+	return c.areaID
+}
+
+// SetAreaID sets the areaID.
+func (c *Client) SetAreaID(areaID string) {
+	c.areaID = areaID
 }
 
 func (c *Client) setAuthTokenHeader(authToken string) {

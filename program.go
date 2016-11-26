@@ -50,11 +50,11 @@ type Prog struct {
 	URL      string `xml:"url"`
 }
 
-// GetStationsByAreaID returns program's meta-info.
-func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date time.Time) (Stations, error) {
+// GetStations returns the program's meta-info.
+func (c *Client) GetStations(ctx context.Context, date time.Time) (Stations, error) {
 	apiEndpoint := path.Join(apiV3,
 		"program/date", internal.ProgramsDate(date),
-		fmt.Sprintf("%s.xml", areaID))
+		fmt.Sprintf("%s.xml", c.AreaID()))
 
 	req, err := c.newRequest(ctx, "GET", apiEndpoint, &Params{})
 	if err != nil {
@@ -74,24 +74,13 @@ func (c *Client) GetStationsByAreaID(ctx context.Context, areaID string, date ti
 	return d.stations(), nil
 }
 
-// GetStations returns program's meta-info in the current location.
-// This API wraps GetStationsByAreaID.
-func (c *Client) GetStations(ctx context.Context, date time.Time) (Stations, error) {
-	areaID, err := AreaID()
-	if err != nil {
-		return nil, err
-	}
-
-	return c.GetStationsByAreaID(ctx, areaID, date)
-}
-
-// GetNowProgramsByAreaID returns program's meta-info which are currently on the air.
-func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (Stations, error) {
+// GetNowPrograms returns the program's meta-info which are currently on the air.
+func (c *Client) GetNowPrograms(ctx context.Context) (Stations, error) {
 	apiEndpoint := apiPath(apiV2, "program/now")
 
 	req, err := c.newRequest(ctx, "GET", apiEndpoint, &Params{
 		query: map[string]string{
-			"area_id": areaID,
+			"area_id": c.AreaID(),
 		},
 	})
 	if err != nil {
@@ -109,17 +98,6 @@ func (c *Client) GetNowProgramsByAreaID(ctx context.Context, areaID string) (Sta
 		return nil, err
 	}
 	return d.stations(), nil
-}
-
-// GetNowPrograms returns program's meta-info in the current location.
-// This API wraps GetNowProgramsByAreaID.
-func (c *Client) GetNowPrograms(ctx context.Context) (Stations, error) {
-	areaID, err := AreaID()
-	if err != nil {
-		return nil, err
-	}
-
-	return c.GetNowProgramsByAreaID(ctx, areaID)
 }
 
 // GetProgramByStartTime returns a specified program.
@@ -152,7 +130,7 @@ func (c *Client) GetProgramByStartTime(ctx context.Context, stationID string, st
 	return prog, nil
 }
 
-// GetWeeklyPrograms returns weekly programs.
+// GetWeeklyPrograms returns the weekly programs.
 func (c *Client) GetWeeklyPrograms(ctx context.Context, stationID string) (Stations, error) {
 	apiEndpoint := path.Join(apiV3,
 		"program/station/weekly",

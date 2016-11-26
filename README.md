@@ -87,10 +87,10 @@ if err != nil {
 ctx := context.Background()
 login, err := client.Login(ctx, "example@mail.com", "example_password")
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
-if login.StatusCode() != 200 {                       
-    log.Fatalf("Failed to login premium member.\nInvalid status code: %d",
+if login.StatusCode() != 200 {
+	log.Fatalf("Failed to login premium member.\nInvalid status code: %d",
 		login.StatusCode())
 }
 

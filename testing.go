@@ -3,6 +3,7 @@ package radiko
 import (
 	"flag"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path"
 	"testing"
@@ -34,6 +35,11 @@ func init() {
 // radiko.jp restricts use from outside Japan.
 func isOutsideJP() bool {
 	return outsideJP
+}
+
+// Should restore defaultHTTPClient if SetHTTPClient is called.
+func teardownHTTPClient() {
+	SetHTTPClient(&http.Client{Timeout: defaultHTTPTimeout})
 }
 
 func createTestTempDir(t *testing.T) (string, func()) {

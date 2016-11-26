@@ -10,63 +10,23 @@ import (
 	"github.com/yyoshiki41/go-radiko/internal"
 )
 
-func TestGetStationsByAreaID(t *testing.T) {
-	if isOutsideJP() {
-		t.Skip("Skipping test in limited mode.")
-	}
-
-	client, err := New("")
-	if err != nil {
-		t.Fatalf("Failed to construct client: %s", err)
-	}
-
-	ctx := context.Background()
-	stations, err := client.GetStationsByAreaID(ctx, areaIDTokyo, time.Now())
-	if err != nil {
-		t.Error(err)
-	}
-	if len(stations) == 0 {
-		t.Error("Stations is nil.")
-	}
-}
-
 func TestGetStations(t *testing.T) {
 	if isOutsideJP() {
 		t.Skip("Skipping test in limited mode.")
 	}
 
-	client, err := New("")
+	c, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
 
-	ctx := context.Background()
-	stations, err := client.GetStations(ctx, time.Now())
+	c.SetAreaID(areaIDTokyo)
+	stations, err := c.GetStations(context.Background(), time.Now())
 	if err != nil {
 		t.Error(err)
 	}
 	if len(stations) == 0 {
 		t.Error("Stations is nil.")
-	}
-}
-
-func TestGetNowProgramsByAreaID(t *testing.T) {
-	if isOutsideJP() {
-		t.Skip("Skipping test in limited mode.")
-	}
-
-	client, err := New("")
-	if err != nil {
-		t.Fatalf("Failed to construct client: %s", err)
-	}
-
-	ctx := context.Background()
-	programs, err := client.GetNowProgramsByAreaID(ctx, areaIDTokyo)
-	if err != nil {
-		t.Error(err)
-	}
-	if len(programs) == 0 {
-		t.Errorf("Programs is nil.")
 	}
 }
 
@@ -75,13 +35,12 @@ func TestGetNowPrograms(t *testing.T) {
 		t.Skip("Skipping test in limited mode.")
 	}
 
-	client, err := New("")
+	c, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
 
-	ctx := context.Background()
-	programs, err := client.GetNowPrograms(ctx)
+	programs, err := c.GetNowPrograms(context.Background())
 	if err != nil {
 		t.Error(err)
 	}
@@ -95,7 +54,7 @@ func TestGetProgramByStartTime(t *testing.T) {
 		t.Skip("Skipping test in limited mode.")
 	}
 
-	client, err := New("")
+	c, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
@@ -112,8 +71,7 @@ func TestGetProgramByStartTime(t *testing.T) {
 	start := time.Date(y, m, d, 16, 0, 0, 0, time.UTC)
 	end := time.Date(y, m, d, 18, 0, 0, 0, time.UTC)
 
-	ctx := context.Background()
-	prog, err := client.GetProgramByStartTime(ctx, stationID, start)
+	prog, err := c.GetProgramByStartTime(context.Background(), stationID, start)
 	if err != nil {
 		t.Error(err)
 	}
@@ -124,12 +82,12 @@ func TestGetProgramByStartTime(t *testing.T) {
 }
 
 func TestGetProgramByStartTimeEmptyStationID(t *testing.T) {
-	client, err := New("")
+	c, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
 
-	_, err = client.GetProgramByStartTime(context.Background(), "", time.Now())
+	_, err = c.GetProgramByStartTime(context.Background(), "", time.Now())
 	if err == nil {
 		t.Error("Should detect error.")
 	}
