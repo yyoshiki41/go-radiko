@@ -25,7 +25,7 @@ func TestEmptyStationIDTimeshiftPlaylistM3U8(t *testing.T) {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
 
-	_, err := c.TimeshiftPlaylistM3U8(context.Background(), "", time.Now())
+	_, err = client.TimeshiftPlaylistM3U8(context.Background(), "", time.Now())
 	if err == nil {
 		t.Error("Should detect an error.")
 	}
