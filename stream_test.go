@@ -19,6 +19,6 @@ func TestGetStreamMultiURL(t *testing.T) {
 func TestNotExistsStreamMultiURL(t *testing.T) {
 	_, err := GetStreamMultiURL("TEST_LFR")
 	if err == nil {
-		t.Error("Should detect error.")
+		t.Error("Should detect an error.")
 	}
 }

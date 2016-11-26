@@ -89,17 +89,17 @@ func TestGetProgramByStartTimeEmptyStationID(t *testing.T) {
 
 	_, err = c.GetProgramByStartTime(context.Background(), "", time.Now())
 	if err == nil {
-		t.Error("Should detect error.")
+		t.Error("Should detect an error.")
 	}
 }
 
 func TestGetWeeklyPrograms(t *testing.T) {
-	client, err := New("")
+	c, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
 	}
 
-	programs, err := client.GetWeeklyPrograms(context.Background(), "LFR")
+	programs, err := c.GetWeeklyPrograms(context.Background(), "LFR")
 	if err != nil {
 		t.Error(err)
 	}

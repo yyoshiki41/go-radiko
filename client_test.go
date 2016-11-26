@@ -25,7 +25,7 @@ func TestEmptyHTTPClient(t *testing.T) {
 	client, err := New("")
 	if err == nil {
 		t.Errorf(
-			"Should detect HTTPClient is nil.\nclient: %v", client)
+			"Should detect that HTTPClient is nil.\nclient: %v", client)
 	}
 }
 
@@ -96,7 +96,7 @@ func TestNewRequestWithEmptyContext(t *testing.T) {
 	var ctx context.Context
 	_, err = client.newRequest(ctx, "GET", "", &Params{})
 	if err == nil {
-		t.Error("Should detect empty context.")
+		t.Error("Should detect an empty context.")
 	}
 }
 
