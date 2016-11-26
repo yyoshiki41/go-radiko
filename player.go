@@ -10,7 +10,7 @@ const (
 	playerURL = "http://radiko.jp/apps/js/flash/myplayer-release.swf"
 )
 
-// DownloadPlayer downloads swf player file.
+// DownloadPlayer downloads a swf player file.
 func DownloadPlayer(path string) error {
 	resp, err := http.Get(playerURL)
 	if err != nil {

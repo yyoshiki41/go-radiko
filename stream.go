@@ -8,6 +8,12 @@ import (
 	"path"
 )
 
+// URLItem represents a stream url.
+type URLItem struct {
+	Areafree bool   `xml:"areafree,attr"`
+	Item     string `xml:",chardata"`
+}
+
 // GetStreamMultiURL returns a slice of the stream url.
 func GetStreamMultiURL(stationID string) ([]URLItem, error) {
 	endpoint := path.Join(apiV2, "station/stream_multi",
@@ -34,10 +40,4 @@ func GetStreamMultiURL(stationID string) ([]URLItem, error) {
 type streamURLData struct {
 	XMLName xml.Name  `xml:"url"`
 	Items   []URLItem `xml:"item"`
-}
-
-// URLItem represents a stream url.
-type URLItem struct {
-	Areafree bool   `xml:"areafree,attr"`
-	Item     string `xml:",chardata"`
 }
