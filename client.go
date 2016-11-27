@@ -96,6 +96,11 @@ func (c *Client) SetAreaID(areaID string) {
 	c.areaID = areaID
 }
 
+// AuthToken returns the authtoken.
+func (c *Client) AuthToken() string {
+	return c.authTokenHeader
+}
+
 func (c *Client) setAuthTokenHeader(authToken string) {
 	c.authTokenHeader = authToken
 }
@@ -131,7 +136,7 @@ func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, param
 	req.Header.Set("pragma", "no-cache")
 	// Add auth_token in HTTP Header
 	if params.setAuthToken {
-		req.Header.Set(radikoAuthTokenHeader, c.authTokenHeader)
+		req.Header.Set(radikoAuthTokenHeader, c.AuthToken())
 	}
 
 	return req, nil

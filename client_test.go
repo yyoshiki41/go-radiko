@@ -129,17 +129,6 @@ func TestClientSetAreaID(t *testing.T) {
 	}
 }
 
-func TestJar(t *testing.T) {
-	client, err := New("")
-	if err != nil {
-		t.Errorf("Failed to construct client: %s", err)
-	}
-
-	if client.Jar() == nil {
-		t.Error("httpClient.Jar is empty.")
-	}
-}
-
 func TestSetJar(t *testing.T) {
 	client, err := New("")
 	if err != nil {
@@ -166,8 +155,8 @@ func TestSetAuthTokenHeader(t *testing.T) {
 
 	const expected = "test_token"
 	client.setAuthTokenHeader(expected)
-	if expected != client.authTokenHeader {
-		t.Errorf("expected %s, but %s", expected, client.authTokenHeader)
+	if actual := client.AuthToken(); expected != actual {
+		t.Errorf("expected %s, but %s", expected, actual)
 	}
 }
 
