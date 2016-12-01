@@ -1,8 +1,6 @@
-package internal
+package util
 
-import (
-	"time"
-)
+import "time"
 
 const (
 	dateLayout     = "20060102"

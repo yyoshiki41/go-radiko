@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yyoshiki41/go-radiko/internal"
+	"github.com/yyoshiki41/go-radiko/internal/util"
 )
 
 func TestGetStations(t *testing.T) {
@@ -75,7 +75,7 @@ func TestGetProgramByStartTime(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected := internal.Datetime(end)
+	expected := util.Datetime(end)
 	if expected != prog.To {
 		t.Errorf("expected %s, but %s", expected, prog.To)
 	}

@@ -3,7 +3,7 @@ package radiko
 import (
 	"net/http"
 
-	"github.com/yyoshiki41/go-radiko/internal"
+	"github.com/yyoshiki41/go-radiko/internal/m3u8"
 )
 
 // GetChunklistFromM3U8 returns a slice of url.
@@ -14,5 +14,5 @@ func GetChunklistFromM3U8(uri string) ([]string, error) {
 	}
 	defer resp.Body.Close()
 
-	return internal.GetChunklistFromM3U8(resp.Body)
+	return m3u8.GetChunklist(resp.Body)
 }

@@ -10,7 +10,7 @@ import (
 	"path"
 	"time"
 
-	"github.com/yyoshiki41/go-radiko/internal"
+	"github.com/yyoshiki41/go-radiko/internal/util"
 )
 
 // Stations is a slice of Station.
@@ -53,7 +53,7 @@ type Prog struct {
 // GetStations returns the program's meta-info.
 func (c *Client) GetStations(ctx context.Context, date time.Time) (Stations, error) {
 	apiEndpoint := path.Join(apiV3,
-		"program/date", internal.ProgramsDate(date),
+		"program/date", util.ProgramsDate(date),
 		fmt.Sprintf("%s.xml", c.AreaID()))
 
 	req, err := c.newRequest(ctx, "GET", apiEndpoint, &Params{})
@@ -112,7 +112,7 @@ func (c *Client) GetProgramByStartTime(ctx context.Context, stationID string, st
 		return nil, err
 	}
 
-	ft := internal.Datetime(start)
+	ft := util.Datetime(start)
 	var prog *Prog
 	for _, s := range stations {
 		if s.ID == stationID {

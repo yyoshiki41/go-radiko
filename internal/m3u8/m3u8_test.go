@@ -1,4 +1,4 @@
-package internal
+package m3u8
 
 import (
 	"bufio"
@@ -21,11 +21,11 @@ func readTestData(fileName string) *os.File {
 	return f
 }
 
-func TestGetURIFromM3U8(t *testing.T) {
+func TestGetURI(t *testing.T) {
 	expected := "https://radiko.jp/v2/api/ts/chunklist/NejwTOkX.m3u8"
 
 	input := bufio.NewReader(readTestData("uri.m3u8"))
-	u, err := GetURIFromM3U8(input)
+	u, err := GetURI(input)
 	if err != nil {
 		t.Error(err)
 	}
@@ -34,9 +34,9 @@ func TestGetURIFromM3U8(t *testing.T) {
 	}
 }
 
-func TestGetChunklistFromM3U8(t *testing.T) {
+func TestGetChunklist(t *testing.T) {
 	input := bufio.NewReader(readTestData("chunklist.m3u8"))
-	chunklist, err := GetChunklistFromM3U8(input)
+	chunklist, err := GetChunklist(input)
 	if err != nil {
 		t.Error(err)
 	}

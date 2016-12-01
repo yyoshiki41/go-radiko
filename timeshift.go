@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/yyoshiki41/go-radiko/internal"
+	"github.com/yyoshiki41/go-radiko/internal/m3u8"
 )
 
 // TimeshiftPlaylistM3U8 returns uri.
@@ -31,5 +31,5 @@ func (c *Client) TimeshiftPlaylistM3U8(ctx context.Context, stationID string, st
 	}
 	defer resp.Body.Close()
 
-	return internal.GetURIFromM3U8(resp.Body)
+	return m3u8.GetURI(resp.Body)
 }
