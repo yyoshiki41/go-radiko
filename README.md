@@ -127,7 +127,7 @@ $ go run ./examples/auth/main.go
 
 ## Projects using go-radiko
 
-- [radigo](https://github.com/yyoshiki41/radigo) - Record a radiko program using timeshift APIs.
+- [radigo](https://github.com/yyoshiki41/radigo) - Record a radiko program.
 
 ## License 
 The MIT License
