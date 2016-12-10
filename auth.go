@@ -114,7 +114,7 @@ func verifyAuth2FmsResponse(slc []string) error {
 	}
 	s := strings.TrimSpace(slc[0])
 	if !strings.HasPrefix(s, "JP") {
-		return errors.New(fmt.Sprintf("invalid token: %s", s))
+		return fmt.Errorf("invalid token: %s", s)
 	}
 
 	return nil
