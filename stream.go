@@ -41,3 +41,9 @@ type streamURLData struct {
 	XMLName xml.Name  `xml:"url"`
 	Items   []URLItem `xml:"item"`
 }
+
+// GetLiveURL returns a live url for web browser.
+func GetLiveURL(stationID string) string {
+	endpoint := path.Join("#!/live", stationID)
+	return defaultEndpoint + "/" + endpoint
+}

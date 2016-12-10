@@ -23,3 +23,11 @@ func TestTimeshiftPlaylistM3U8_EmptyStationID(t *testing.T) {
 		t.Error("Should detect an error.")
 	}
 }
+
+func TestGetTimeshiftURL(t *testing.T) {
+	stationID := "LFR"
+	url := GetTimeshiftURL(stationID, time.Now())
+	if len(url) == 0 {
+		t.Error("A timeshift url is empty.")
+	}
+}

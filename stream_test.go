@@ -22,3 +22,11 @@ func TestGetStreamMultiURL_EmptyStationID(t *testing.T) {
 		t.Error("Should detect an error.")
 	}
 }
+
+func TestGetLiveURL(t *testing.T) {
+	stationID := "LFR"
+	url := GetLiveURL(stationID)
+	if len(url) == 0 {
+		t.Error("A live url is empty.")
+	}
+}
