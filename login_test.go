@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestFailedToLogin(t *testing.T) {
+func TestLogin_StatusCode400(t *testing.T) {
 	// delete http.Client.Jar
 	defer teardownHTTPClient()
 

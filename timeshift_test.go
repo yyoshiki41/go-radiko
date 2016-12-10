@@ -10,16 +10,9 @@ func TestTimeshiftPlaylistM3U8(t *testing.T) {
 	if isOutsideJP() {
 		t.Skip("Skipping test in limited mode.")
 	}
-
-	client, err := New("")
-	if err != nil {
-		t.Fatalf("Failed to construct client: %s", err)
-	}
-
-	_ = client
 }
 
-func TestEmptyStationIDTimeshiftPlaylistM3U8(t *testing.T) {
+func TestTimeshiftPlaylistM3U8_EmptyStationID(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)

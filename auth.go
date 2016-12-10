@@ -14,13 +14,13 @@ import (
 // AuthorizeToken returns an enables auth_token and error,
 // and sets auth_token in Client.
 // Is is a alias function that wraps Auth1Fms and Auth2Fms.
-func (c *Client) AuthorizeToken(ctx context.Context, pngFilePath string) (string, error) {
+func (c *Client) AuthorizeToken(ctx context.Context, pngFile string) (string, error) {
 	authToken, length, offset, err := c.Auth1Fms(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	f, err := os.Open(pngFilePath)
+	f, err := os.Open(pngFile)
 	if err != nil {
 		return "", err
 	}

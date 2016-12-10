@@ -9,6 +9,10 @@ import (
 )
 
 func TestAuthorizeToken(t *testing.T) {
+	if isOutsideJP() {
+		t.Skip("Skipping test in limited mode.")
+	}
+
 	c, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
@@ -22,6 +26,20 @@ func TestAuthorizeToken(t *testing.T) {
 	}
 	if len(authToken) == 0 {
 		t.Error("AuthToken is empty.")
+	}
+}
+
+func TestAuthorizeToken_NotExistAuthkeyFile(t *testing.T) {
+	c, err := New("")
+	if err != nil {
+		t.Fatalf("Failed to construct client: %s", err)
+	}
+
+	ctx := context.Background()
+	pngFile := path.Join(testdataDir, "not_exist_authkey.png")
+	_, err = c.AuthorizeToken(ctx, pngFile)
+	if err == nil {
+		t.Error(err)
 	}
 }
 
@@ -95,7 +113,7 @@ func TestVerifyAuth2FmsResponse(t *testing.T) {
 		err := verifyAuth2FmsResponse(c.slc)
 		if c.expectedErr {
 			if err == nil {
-				t.Error("expected error has occurred.")
+				t.Error("Should detect an error.")
 			}
 			continue
 		}

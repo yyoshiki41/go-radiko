@@ -16,7 +16,7 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestEmptyHTTPClient(t *testing.T) {
+func TestNew_EmptyHTTPClient(t *testing.T) {
 	var c *http.Client
 
 	SetHTTPClient(c)
@@ -42,7 +42,7 @@ func TestNewRequest(t *testing.T) {
 	}
 }
 
-func TestNewRequestWithAuthToken(t *testing.T) {
+func TestNewRequest_WithAuthToken(t *testing.T) {
 	const expected = "auth_token"
 
 	client, err := New(expected)
@@ -61,7 +61,7 @@ func TestNewRequestWithAuthToken(t *testing.T) {
 	}
 }
 
-func TestNewRequestWithContext(t *testing.T) {
+func TestNewRequest_WithContext(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
@@ -87,7 +87,7 @@ func TestNewRequestWithContext(t *testing.T) {
 	}
 }
 
-func TestNewRequestWithEmptyContext(t *testing.T) {
+func TestNewRequest_WithEmptyContext(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
@@ -100,7 +100,7 @@ func TestNewRequestWithEmptyContext(t *testing.T) {
 	}
 }
 
-func TestClientAreaID(t *testing.T) {
+func TestClient_AreaID(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)
@@ -115,7 +115,7 @@ func TestClientAreaID(t *testing.T) {
 	}
 }
 
-func TestClientSetAreaID(t *testing.T) {
+func TestClient_SetAreaID(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)
@@ -129,7 +129,7 @@ func TestClientSetAreaID(t *testing.T) {
 	}
 }
 
-func TestSetJar(t *testing.T) {
+func TestClient_SetJar(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)
@@ -147,7 +147,7 @@ func TestSetJar(t *testing.T) {
 	}
 }
 
-func TestSetAuthTokenHeader(t *testing.T) {
+func TestClient_SetAuthTokenHeader(t *testing.T) {
 	client, err := New("")
 	if err != nil {
 		t.Errorf("Failed to construct client: %s", err)

@@ -16,8 +16,8 @@ func TestGetStreamMultiURL(t *testing.T) {
 	}
 }
 
-func TestNotExistsStreamMultiURL(t *testing.T) {
-	_, err := GetStreamMultiURL("TEST_LFR")
+func TestGetStreamMultiURL_EmptyStationID(t *testing.T) {
+	_, err := GetStreamMultiURL("")
 	if err == nil {
 		t.Error("Should detect an error.")
 	}
