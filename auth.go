@@ -3,6 +3,8 @@ package radiko
 import (
 	"context"
 	"encoding/base64"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -29,7 +31,11 @@ func (c *Client) AuthorizeToken(ctx context.Context, pngFilePath string) (string
 	}
 	partialKey := base64.StdEncoding.EncodeToString(b)
 
-	if _, err := c.Auth2Fms(ctx, authToken, partialKey); err != nil {
+	slc, err := c.Auth2Fms(ctx, authToken, partialKey)
+	if err != nil {
+		return "", err
+	}
+	if err := verifyAuth2FmsResponse(slc); err != nil {
 		return "", err
 	}
 
@@ -100,4 +106,16 @@ func (c *Client) Auth2Fms(ctx context.Context, authToken, partialKey string) ([]
 
 	s := strings.Split(string(b), ",")
 	return s, nil
+}
+
+func verifyAuth2FmsResponse(slc []string) error {
+	if len(slc) == 0 {
+		return errors.New("missing token")
+	}
+	s := strings.TrimSpace(slc[0])
+	if !strings.HasPrefix(s, "JP") {
+		return errors.New(fmt.Sprintf("invalid token: %s", s))
+	}
+
+	return nil
 }
