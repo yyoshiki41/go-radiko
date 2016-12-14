@@ -198,6 +198,14 @@ func TestSetHTTPClient(t *testing.T) {
 	}
 }
 
+func TestSetUserAgent(t *testing.T) {
+	const expected = "test-user-agent"
+	SetUserAgent(expected)
+	if expected != userAgent {
+		t.Errorf("expected %d, but %d", expected, userAgent)
+	}
+}
+
 func TestAPIPath(t *testing.T) {
 	const path = "test"
 	var apiEndpoint string

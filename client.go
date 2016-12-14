@@ -3,11 +3,13 @@ package radiko
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
 	"path"
+	"runtime"
 	"time"
 )
 
@@ -35,7 +37,10 @@ const (
 	radikoDevice     = "pc"
 )
 
-var httpClient = &http.Client{Timeout: defaultHTTPTimeout}
+var (
+	httpClient = &http.Client{Timeout: defaultHTTPTimeout}
+	userAgent  = fmt.Sprintf("go-radiko (%s)", runtime.Version())
+)
 
 // Client represents a single connection to radiko API endpoint.
 type Client struct {
@@ -131,6 +136,7 @@ func (c *Client) newRequest(ctx context.Context, verb, apiEndpoint string, param
 	for k, v := range params.header {
 		req.Header.Set(k, v)
 	}
+	req.Header.Set("User-Agent", userAgent)
 	// For backwards compatibility with HTTP/1.0
 	// https://tools.ietf.org/html/rfc7234#page-29
 	req.Header.Set("pragma", "no-cache")
@@ -162,6 +168,11 @@ type Params struct {
 // SetHTTPClient overrides the default HTTP client.
 func SetHTTPClient(client *http.Client) {
 	httpClient = client
+}
+
+// SetUserAgent overrides the default User-Agent header.
+func SetUserAgent(ua string) {
+	userAgent = ua
 }
 
 func apiPath(apiVersion, pathStr string) string {
