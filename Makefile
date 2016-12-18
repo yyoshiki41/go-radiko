@@ -8,7 +8,7 @@ all: help
 help:
 	@echo "make init          #=> Run init scripts"
 	@echo "make get-deps      #=> Install dependencies"
-	@echo "make lint          #=> Verify tests"
+	@echo "make verify        #=> Verify tests"
 	@echo "make lint          #=> Run golint"
 	@echo "make vet           #=> Run go vet"
 	@echo "make test          #=> Run tests"
