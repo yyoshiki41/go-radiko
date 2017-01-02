@@ -21,6 +21,8 @@ var (
 )
 
 func init() {
+	// FIXME:
+	// affects the outside packages
 	flag.BoolVar(&outsideJP, "outjp", false, "Skip tests if outside Japan.")
 	flag.Parse()
 
