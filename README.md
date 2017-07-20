@@ -36,32 +36,14 @@ fmt.Printf("%v", stations)
 
 ### ■ Get & Set authentication token
 
-- swftools is required.
-
 ```go
-// 1. Download a swf player.
-swfPath := path.Join(dir, "myplayer.swf")
-if err := radiko.DownloadPlayer(swfPath); err != nil {
-	log.Fatalf("Failed to download swf player. %s", err)
-}
-
-// 2. Using swfextract, create an authkey file from a swf player.
-cmdPath, err := exec.LookPath("swfextract")
-if err != nil {
-	log.Fatal(err)
-}
-authKeyPath := path.Join(dir, "authkey.png")
-if c := exec.Command(cmdPath, "-b", "12", swfPath, "-o", authKeyPath); err != c.Run() {
-	log.Fatalf("Failed to execute swfextract. %s", err)
-}
-
-// 3. Create a new Client.
+// 1. Create a new Client.
 client, err := radiko.New("")
 if err != nil {
 	panic(err)
 }
 
-// 4. Enables and sets the auth_token.
+// 2. Enables and sets the auth_token.
 // After client.AuthorizeToken() has succeeded,
 // the client has the enabled auth_token internally.
 authToken, err := client.AuthorizeToken(context.Background(), authKeyPath)
@@ -72,16 +54,14 @@ if err != nil {
 
 #### Premium member (Enable to use the [area free](http://radiko.jp/rg/premium/).)
 
-Step 1,2 are the same as above.
-
 ```go
-// 3. Create a new Client.
+// 1. Create a new Client.
 client, err := radiko.New("")
 if err != nil {
 	panic(err)
 }
 
-// 4. Login as the premium member
+// 2. Login as the premium member
 // After client.Login() has succeeded,
 // the client has the valid cookie internally.
 ctx := context.Background()
@@ -94,7 +74,7 @@ if login.StatusCode() != 200 {
 		login.StatusCode())
 }
 
-// 5. Enables and sets the auth_token.
+// 3. Enables and sets the auth_token.
 // After client.AuthorizeToken() has succeeded,
 // the client has the enabled auth_token internally.
 authToken, err := client.AuthorizeToken(context.Background(), authKeyPath)
