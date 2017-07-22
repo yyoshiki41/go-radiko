@@ -1,12 +1,13 @@
 package radiko
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -14,19 +15,22 @@ import (
 // AuthorizeToken returns an enables auth_token and error,
 // and sets auth_token in Client.
 // Is is a alias function that wraps Auth1Fms and Auth2Fms.
-func (c *Client) AuthorizeToken(ctx context.Context, pngFile string) (string, error) {
+func (c *Client) AuthorizeToken(ctx context.Context) (string, error) {
+	bin, err := downloadBinary()
+	if err != nil {
+		return "", err
+	}
+
+	f := bytes.NewReader(bin)
+
 	authToken, length, offset, err := c.Auth1Fms(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	f, err := os.Open(pngFile)
-	if err != nil {
-		return "", err
-	}
-
 	b := make([]byte, length)
-	if _, err = f.ReadAt(b, offset); err != nil {
+	io.CopyN(ioutil.Discard, f, offset)
+	if _, err = f.Read(b); err != nil {
 		return "", err
 	}
 	partialKey := base64.StdEncoding.EncodeToString(b)

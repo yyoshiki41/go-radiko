@@ -19,27 +19,12 @@ func TestAuthorizeToken(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	pngPath := path.Join(testdataDir, "authkey.png")
-	authToken, err := c.AuthorizeToken(ctx, pngPath)
+	authToken, err := c.AuthorizeToken(ctx)
 	if err != nil {
 		t.Error(err)
 	}
 	if len(authToken) == 0 {
 		t.Error("AuthToken is empty.")
-	}
-}
-
-func TestAuthorizeToken_NotExistAuthkeyFile(t *testing.T) {
-	c, err := New("")
-	if err != nil {
-		t.Fatalf("Failed to construct client: %s", err)
-	}
-
-	ctx := context.Background()
-	pngFile := path.Join(testdataDir, "not_exist_authkey.png")
-	_, err = c.AuthorizeToken(ctx, pngFile)
-	if err == nil {
-		t.Error(err)
 	}
 }
 
