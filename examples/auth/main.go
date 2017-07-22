@@ -3,9 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
 
 	radiko "github.com/yyoshiki41/go-radiko"
 )
@@ -25,13 +23,4 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(authToken)
-}
-
-func createTempDir() (string, func()) {
-	dir, err := ioutil.TempDir("", "example")
-	if err != nil {
-		log.Fatalf("Failed to create temp dir: %s", err)
-	}
-
-	return dir, func() { os.RemoveAll(dir) }
 }
