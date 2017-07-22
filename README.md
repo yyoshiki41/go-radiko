@@ -107,7 +107,8 @@ $ go run ./examples/auth/main.go
 
 ## Projects using go-radiko
 
-- [radigo](https://github.com/yyoshiki41/radigo) - Record a radiko program.
+- [yyoshiki41/radigo](https://github.com/yyoshiki41/radigo) - Record a radiko program.
+- [juntaki/toyotomimi](https://github.com/juntaki/toyotomimi)
 
 ## License 
 The MIT License
