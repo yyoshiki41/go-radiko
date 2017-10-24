@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path"
+	"path/filepath"
 	"testing"
 )
 
@@ -30,7 +30,7 @@ func init() {
 	if goPath == "" {
 		panic("$GOPATH is empty.")
 	}
-	testdataDir = path.Join(goPath, "src", "github.com/yyoshiki41/go-radiko", "testdata")
+	testdataDir = filepath.Join(goPath, "src", "github.com/yyoshiki41/go-radiko", "testdata")
 }
 
 // For skipping tests.

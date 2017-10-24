@@ -202,7 +202,7 @@ func TestSetUserAgent(t *testing.T) {
 	const expected = "test-user-agent"
 	SetUserAgent(expected)
 	if expected != userAgent {
-		t.Errorf("expected %d, but %d", expected, userAgent)
+		t.Errorf("expected %s, but %s", expected, userAgent)
 	}
 }
 

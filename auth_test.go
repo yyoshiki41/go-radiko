@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"os"
-	"path"
+	"path/filepath"
 	"testing"
 )
 
@@ -56,7 +56,7 @@ func TestAuth2Fms(t *testing.T) {
 		t.Error(err)
 	}
 
-	pngPath := path.Join(testdataDir, "authkey.png")
+	pngPath := filepath.Join(testdataDir, "authkey.png")
 	f, err := os.Open(pngPath)
 	if err != nil {
 		t.Error(err)
