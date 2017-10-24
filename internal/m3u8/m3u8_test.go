@@ -3,7 +3,7 @@ package m3u8
 import (
 	"bufio"
 	"os"
-	"path"
+	"path/filepath"
 	"testing"
 )
 
@@ -14,7 +14,7 @@ func readTestData(fileName string) *os.File {
 	if GOPATH == "" {
 		panic("$GOPATH is empty.")
 	}
-	f, err := os.Open(path.Join(GOPATH, "src", testDir, fileName))
+	f, err := os.Open(filepath.Join(GOPATH, "src", testDir, fileName))
 	if err != nil {
 		panic(err)
 	}

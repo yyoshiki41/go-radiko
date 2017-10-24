@@ -3,7 +3,7 @@ package radiko
 import (
 	"context"
 	"os"
-	"path"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -109,7 +109,7 @@ func TestGetWeeklyPrograms(t *testing.T) {
 }
 
 func TestDecodeStationsData(t *testing.T) {
-	file, err := os.Open(path.Join(testdataDir, "stations.xml"))
+	file, err := os.Open(filepath.Join(testdataDir, "stations.xml"))
 	if err != nil {
 		t.Fatal(err)
 	}
