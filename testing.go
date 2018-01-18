@@ -16,7 +16,6 @@ const (
 var (
 	outsideJP bool
 
-	goPath      string
 	testdataDir string
 )
 
@@ -26,11 +25,8 @@ func init() {
 	flag.BoolVar(&outsideJP, "outjp", false, "Skip tests if outside Japan.")
 	flag.Parse()
 
-	goPath := os.Getenv("GOPATH")
-	if goPath == "" {
-		panic("$GOPATH is empty.")
-	}
-	testdataDir = filepath.Join(goPath, "src", "github.com/yyoshiki41/go-radiko", "testdata")
+	GOPATH := os.Getenv("GOPATH")
+	testdataDir = filepath.Join(GOPATH, "src", "github.com/yyoshiki41/go-radiko", "testdata")
 }
 
 // For skipping tests.
