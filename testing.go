@@ -1,7 +1,6 @@
 package radiko
 
 import (
-	"flag"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -9,9 +8,7 @@ import (
 	"testing"
 )
 
-const (
-	areaIDTokyo = "JP13"
-)
+const areaIDTokyo = "JP13"
 
 var (
 	outsideJP bool
@@ -20,10 +17,11 @@ var (
 )
 
 func init() {
-	// FIXME:
-	// affects the outside packages
-	flag.BoolVar(&outsideJP, "outjp", false, "Skip tests if outside Japan.")
-	flag.Parse()
+	// Skip tests if outside Japan.
+	OUTSIDEJP := os.Getenv("GO_RADIKO_OUTSIDE_JP")
+	if len(OUTSIDEJP) > 0 {
+		outsideJP = true
+	}
 
 	GOPATH := os.Getenv("GOPATH")
 	testdataDir = filepath.Join(GOPATH, "src", "github.com/yyoshiki41/go-radiko", "testdata")

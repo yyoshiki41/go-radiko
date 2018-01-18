@@ -20,11 +20,11 @@ test:
 	go test $(PKGS)
 
 test-out:
-	go test -outjp $(PKGS)
+	GO_RADIKO_OUTSIDE_JP=true go test $(PKGS)
 
 test-ci:
-	@echo "go test -outjp"
-	@go test -outjp -race -coverprofile=coverage.txt -covermode=atomic $(PKGS)
+	@echo "GO_RADIKO_OUTSIDE_JP=true go test"
+	@GO_RADIKO_OUTSIDE_JP=true go test -outjp -race -coverprofile=coverage.txt -covermode=atomic $(PKGS)
 
 verify: lint vet
 
