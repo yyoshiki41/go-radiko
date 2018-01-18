@@ -24,7 +24,7 @@ test-out:
 
 test-ci:
 	@echo "GO_RADIKO_OUTSIDE_JP=true go test"
-	@GO_RADIKO_OUTSIDE_JP=true go test -outjp -race -coverprofile=coverage.txt -covermode=atomic $(PKGS)
+	@GO_RADIKO_OUTSIDE_JP=true go test -race -coverprofile=coverage.txt -covermode=atomic $(PKGS)
 
 verify: lint vet
 
