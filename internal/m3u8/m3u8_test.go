@@ -11,9 +11,6 @@ func readTestData(fileName string) *os.File {
 	const testDir = "github.com/yyoshiki41/go-radiko/testdata"
 
 	GOPATH := os.Getenv("GOPATH")
-	if GOPATH == "" {
-		panic("$GOPATH is empty.")
-	}
 	f, err := os.Open(filepath.Join(GOPATH, "src", testDir, fileName))
 	if err != nil {
 		panic(err)
