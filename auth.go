@@ -64,6 +64,9 @@ func (c *Client) Auth1Fms(ctx context.Context) (string, int64, int64, error) {
 	}
 
 	resp, err := c.Do(req)
+	if err != nil {
+		return "", 0, 0, err
+	}
 	defer resp.Body.Close()
 
 	authToken := resp.Header.Get(radikoAuthTokenHeader)
@@ -101,6 +104,9 @@ func (c *Client) Auth2Fms(ctx context.Context, authToken, partialKey string) ([]
 	}
 
 	resp, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
 	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
