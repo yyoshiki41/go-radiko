@@ -1,8 +1,8 @@
 language: go
 
 go:
-  - 1.7.3
-  - master
+  - "1.7.x"
+  - stable
 
 sudo: false
 
