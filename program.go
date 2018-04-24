@@ -125,7 +125,7 @@ func (c *Client) GetProgramByStartTime(ctx context.Context, stationID string, st
 		}
 	}
 	if prog == nil {
-		return nil, errors.New("program is not found")
+		return nil, ErrProgramNotFound
 	}
 	return prog, nil
 }
