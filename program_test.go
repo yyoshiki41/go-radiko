@@ -81,7 +81,7 @@ func TestGetProgramByStartTime(t *testing.T) {
 	}
 }
 
-func TestGetProgramByStartTimeEmptyStationID(t *testing.T) {
+func TestGetProgramByStartTime_EmptyStationID(t *testing.T) {
 	c, err := New("")
 	if err != nil {
 		t.Fatalf("Failed to construct client: %s", err)
@@ -90,6 +90,28 @@ func TestGetProgramByStartTimeEmptyStationID(t *testing.T) {
 	_, err = c.GetProgramByStartTime(context.Background(), "", time.Now())
 	if err == nil {
 		t.Error("Should detect an error.")
+	}
+}
+
+func TestGetProgramByStartTime_ErrProgramNotFound(t *testing.T) {
+	c, err := New("")
+	if err != nil {
+		t.Fatalf("Failed to construct client: %s", err)
+	}
+
+	n := time.Now()
+	if n.Weekday() == time.Sunday {
+		// If it is Sunday, ANN will not be broadcasted.
+		n = n.Add(-24 * time.Hour)
+	}
+	y, m, d := n.Date()
+	// 01:01 AM on Monday to Saturday in JST.
+	start := time.Date(y, m, d, 16, 1, 0, 0, time.UTC)
+
+	stationID := "LFR"
+	_, err = c.GetProgramByStartTime(context.Background(), stationID, start)
+	if err != ErrProgramNotFound {
+		t.Errorf("unexpected error: %s", err)
 	}
 }
 
