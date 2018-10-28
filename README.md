@@ -111,7 +111,10 @@ $ go run ./examples/auth/main.go
 - [juntaki/toyotomimi](https://github.com/juntaki/toyotomimi)
 
 ## License 
-The MIT License
+
+Licensed under the GPLv3 license for all open source applications.
+
+Please do not use this project for commercial use.
 
 ## Author
 
