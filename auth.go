@@ -1,12 +1,10 @@
 package radiko
 
 import (
-	"bytes"
 	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"strconv"
 	"strings"
@@ -14,32 +12,21 @@ import (
 
 // AuthorizeToken returns an enables auth_token and error,
 // and sets auth_token in Client.
-// Is is a alias function that wraps Auth1Fms and Auth2Fms.
+// Is is a alias function that wraps Auth1 and Auth2.
 func (c *Client) AuthorizeToken(ctx context.Context) (string, error) {
-	bin, err := downloadBinary()
+	authToken, length, offset, err := c.Auth1(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	f := bytes.NewReader(bin)
+	b := radikoAuthkeyValue[offset : offset+length]
+	partialKey := base64.StdEncoding.EncodeToString([]byte(b))
 
-	authToken, length, offset, err := c.Auth1Fms(ctx)
+	slc, err := c.Auth2(ctx, authToken, partialKey)
 	if err != nil {
 		return "", err
 	}
-
-	b := make([]byte, length)
-	io.CopyN(ioutil.Discard, f, offset)
-	if _, err = f.Read(b); err != nil {
-		return "", err
-	}
-	partialKey := base64.StdEncoding.EncodeToString(b)
-
-	slc, err := c.Auth2Fms(ctx, authToken, partialKey)
-	if err != nil {
-		return "", err
-	}
-	if err := verifyAuth2FmsResponse(slc); err != nil {
+	if err := verifyAuth2Response(slc); err != nil {
 		return "", err
 	}
 
@@ -47,11 +34,11 @@ func (c *Client) AuthorizeToken(ctx context.Context) (string, error) {
 	return authToken, nil
 }
 
-// Auth1Fms returns authToken, keyLength, keyOffset and error.
-func (c *Client) Auth1Fms(ctx context.Context) (string, int64, int64, error) {
-	apiEndpoint := apiPath(apiV2, "auth1_fms")
+// Auth1 returns authToken, keyLength, keyOffset and error.
+func (c *Client) Auth1(ctx context.Context) (string, int64, int64, error) {
+	apiEndpoint := apiPath(apiV2, "auth1")
 
-	req, err := c.newRequest(ctx, "POST", apiEndpoint, &Params{
+	req, err := c.newRequest(ctx, "GET", apiEndpoint, &Params{
 		header: map[string]string{
 			radikoAppHeader:        radikoApp,
 			radikoAppVersionHeader: radikoAppVersion,
@@ -85,14 +72,12 @@ func (c *Client) Auth1Fms(ctx context.Context) (string, int64, int64, error) {
 	return authToken, length, offset, err
 }
 
-// Auth2Fms enables the given authToken.
-func (c *Client) Auth2Fms(ctx context.Context, authToken, partialKey string) ([]string, error) {
-	apiEndpoint := apiPath(apiV2, "auth2_fms")
+// Auth2 enables the given authToken.
+func (c *Client) Auth2(ctx context.Context, authToken, partialKey string) ([]string, error) {
+	apiEndpoint := apiPath(apiV2, "auth2")
 
-	req, err := c.newRequest(ctx, "POST", apiEndpoint, &Params{
+	req, err := c.newRequest(ctx, "GET", apiEndpoint, &Params{
 		header: map[string]string{
-			radikoAppHeader:        radikoApp,
-			radikoAppVersionHeader: radikoAppVersion,
 			radikoUserHeader:       radikoUser,
 			radikoDeviceHeader:     radikoDevice,
 			radikoAuthTokenHeader:  authToken,
@@ -118,7 +103,7 @@ func (c *Client) Auth2Fms(ctx context.Context, authToken, partialKey string) ([]
 	return s, nil
 }
 
-func verifyAuth2FmsResponse(slc []string) error {
+func verifyAuth2Response(slc []string) error {
 	if len(slc) == 0 {
 		return errors.New("missing token")
 	}
