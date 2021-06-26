@@ -5,8 +5,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/yyoshiki41/go-radiko/internal/m3u8"
 	"github.com/yyoshiki41/go-radiko/internal/util"
+	"github.com/yyoshiki41/go-radiko/pkg/m3u8"
 )
 
 // TimeshiftPlaylistM3U8 returns uri.
