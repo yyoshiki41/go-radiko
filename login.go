@@ -20,7 +20,7 @@ func (c *Client) Login(ctx context.Context, mail, password string) (Statuser, er
 }
 
 func (c *Client) login(ctx context.Context, mail, password string) error {
-	apiEndpoint := "ap/member/login/login"
+	apiEndpoint := "ap/member/webapi/member/login"
 	v := url.Values{}
 	v.Set("mail", mail)
 	v.Set("pass", password)
