@@ -3,7 +3,7 @@ package radiko
 import (
 	"net/http"
 
-	"github.com/yyoshiki41/go-radiko/internal/m3u8"
+	"github.com/yyoshiki41/go-radiko/pkg/m3u8"
 )
 
 // GetChunklistFromM3U8 returns a slice of url.
